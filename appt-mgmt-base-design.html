@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IVA Appointment Management — Base Design</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2234;
+    --border: #1f2d42;
+    --border-bright: #2a3f5a;
+
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+    --purple-border: rgba(167,139,250,0.22);
+
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.08);
+    --blue-border: rgba(96,165,250,0.22);
+
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.08);
+    --orange-border: rgba(251,146,60,0.22);
+
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.08);
+    --red-border: rgba(248,113,113,0.22);
+
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.08);
+    --green-border: rgba(74,222,128,0.22);
+
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.08);
+    --teal-border: rgba(45,212,191,0.22);
+
+    --cyan: #67e8f9;
+    --cyan-dim: rgba(103,232,249,0.06);
+    --cyan-border: rgba(103,232,249,0.2);
+
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.08);
+    --yellow-border: rgba(251,146,60,0.22);
+
+    --pink: #f472b6;
+    --pink-dim: rgba(244,114,182,0.08);
+    --pink-border: rgba(244,114,182,0.22);
+
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 36px 20px 80px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-bright);
+  }
+
+  .header-left .overline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .header-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    background: var(--blue-dim);
+    border: 1px solid var(--blue-border);
+    border-radius: 6px;
+    color: var(--blue);
+    white-space: nowrap;
+  }
+
+  .header-badge.green  { background: var(--green-dim);  border-color: var(--green-border);  color: var(--green); }
+  .header-badge.teal   { background: var(--teal-dim);   border-color: var(--teal-border);   color: var(--teal); }
+  .header-badge.purple { background: var(--purple-dim); border-color: var(--purple-border); color: var(--purple); }
+  .header-badge.orange { background: var(--orange-dim); border-color: var(--orange-border); color: var(--orange); }
+  .header-badge.red    { background: var(--red-dim);    border-color: var(--red-border);    color: var(--red); }
+  .header-badge.yellow { background: var(--yellow-dim); border-color: var(--yellow-border); color: var(--yellow); }
+
+  /* ── MAIN LAYOUT ── */
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .main-flow { display: flex; flex-direction: column; gap: 0; }
+
+  /* ── FLOW STEPS ── */
+  .flow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .step-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 36px;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .step-line {
+    width: 2px;
+    min-height: 24px;
+    flex: 1;
+  }
+
+  .step-card {
+    flex: 1;
+    padding: 18px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .card-body {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .card-body:last-child { margin-bottom: 0; }
+
+  .code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--surface2);
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border-bright);
+  }
+
+  /* color variants */
+  .v-purple .step-num  { color: var(--purple); }
+  .v-purple .step-card { background: var(--purple-dim); border-color: var(--purple-border); }
+  .v-purple .step-line { background: var(--purple-border); }
+  .v-purple .card-tag  { color: var(--purple); }
+  .v-purple .card-title{ color: var(--purple); }
+
+  .v-blue .step-num  { color: var(--blue); }
+  .v-blue .step-card { background: var(--blue-dim); border-color: var(--blue-border); }
+  .v-blue .step-line { background: var(--blue-border); }
+  .v-blue .card-tag  { color: var(--blue); }
+  .v-blue .card-title{ color: var(--blue); }
+
+  .v-orange .step-num  { color: var(--orange); }
+  .v-orange .step-card { background: var(--orange-dim); border-color: var(--orange-border); }
+  .v-orange .step-line { background: var(--orange-border); }
+  .v-orange .card-tag  { color: var(--orange); }
+  .v-orange .card-title{ color: var(--orange); }
+
+  .v-red .step-num  { color: var(--red); }
+  .v-red .step-card { background: var(--red-dim); border-color: var(--red-border); }
+  .v-red .step-line { background: var(--red-border); }
+  .v-red .card-tag  { color: var(--red); }
+  .v-red .card-title{ color: var(--red); }
+
+  .v-green .step-num  { color: var(--green); }
+  .v-green .step-card { background: var(--green-dim); border-color: var(--green-border); }
+  .v-green .step-line { background: var(--green-border); }
+  .v-green .card-tag  { color: var(--green); }
+  .v-green .card-title{ color: var(--green); }
+
+  .v-teal .step-num  { color: var(--teal); }
+  .v-teal .step-card { background: var(--teal-dim); border-color: var(--teal-border); }
+  .v-teal .step-line { background: var(--teal-border); }
+  .v-teal .card-tag  { color: var(--teal); }
+  .v-teal .card-title{ color: var(--teal); }
+
+  .v-cyan .step-num  { color: var(--cyan); }
+  .v-cyan .step-card { background: var(--cyan-dim); border-color: var(--cyan-border); }
+  .v-cyan .step-line { background: var(--cyan-border); }
+  .v-cyan .card-tag  { color: var(--cyan); }
+  .v-cyan .card-title{ color: var(--cyan); }
+
+  .v-yellow .step-num  { color: var(--yellow); }
+  .v-yellow .step-card { background: var(--yellow-dim); border-color: var(--yellow-border); }
+  .v-yellow .step-line { background: var(--yellow-border); }
+  .v-yellow .card-tag  { color: var(--yellow); }
+  .v-yellow .card-title{ color: var(--yellow); }
+
+  .v-pink .step-num  { color: var(--pink); }
+  .v-pink .step-card { background: var(--pink-dim); border-color: var(--pink-border); }
+  .v-pink .step-line { background: var(--pink-border); }
+  .v-pink .card-tag  { color: var(--pink); }
+  .v-pink .card-title{ color: var(--pink); }
+
+  /* split rows */
+  .split-wrap {
+    margin-left: 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .split-wrap.three-col { grid-template-columns: 1fr 1fr 1fr; }
+  .split-wrap.four-col  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .split-card {
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .split-card .split-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .split-card h4  { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .split-card p   { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
+
+  .sc-purple { background: var(--purple-dim); border-color: var(--purple-border); }
+  .sc-purple .split-tag, .sc-purple h4 { color: var(--purple); }
+
+  .sc-blue   { background: var(--blue-dim); border-color: var(--blue-border); }
+  .sc-blue .split-tag, .sc-blue h4 { color: var(--blue); }
+
+  .sc-teal   { background: var(--teal-dim); border-color: var(--teal-border); }
+  .sc-teal .split-tag, .sc-teal h4 { color: var(--teal); }
+
+  .sc-green  { background: var(--green-dim); border-color: var(--green-border); }
+  .sc-green .split-tag, .sc-green h4 { color: var(--green); }
+
+  .sc-orange { background: var(--orange-dim); border-color: var(--orange-border); }
+  .sc-orange .split-tag, .sc-orange h4 { color: var(--orange); }
+
+  .sc-red    { background: var(--red-dim); border-color: var(--red-border); }
+  .sc-red .split-tag, .sc-red h4 { color: var(--red); }
+
+  .sc-pink   { background: var(--pink-dim); border-color: var(--pink-border); }
+  .sc-pink .split-tag, .sc-pink h4 { color: var(--pink); }
+
+  .sc-yellow { background: var(--yellow-dim); border-color: var(--yellow-border); }
+  .sc-yellow .split-tag, .sc-yellow h4 { color: var(--yellow); }
+
+  .sc-cyan   { background: var(--cyan-dim); border-color: var(--cyan-border); }
+  .sc-cyan .split-tag, .sc-cyan h4 { color: var(--cyan); }
+
+  /* intent grid */
+  .intent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .intent-box {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-left: 3px solid;
+  }
+
+  .intent-box.i-sched    { border-left-color: var(--green); }
+  .intent-box.i-existing { border-left-color: var(--blue); }
+  .intent-box.i-info     { border-left-color: var(--teal); }
+  .intent-box.i-transfer { border-left-color: var(--orange); }
+  .intent-box.i-urgent   { border-left-color: var(--red); }
+  .intent-box.i-cancel   { border-left-color: var(--yellow); }
+
+  .intent-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .i-sched .intent-label    { color: var(--green); }
+  .i-existing .intent-label { color: var(--blue); }
+  .i-info .intent-label     { color: var(--teal); }
+  .i-transfer .intent-label { color: var(--orange); }
+  .i-urgent .intent-label   { color: var(--red); }
+  .i-cancel .intent-label   { color: var(--yellow); }
+
+  .intent-action { font-size: 10.5px; color: var(--text-muted); line-height: 1.4; }
+
+  /* script box */
+  .script-box {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+
+  .script-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .script-text {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.7;
+    font-style: italic;
+    border-left: 3px solid var(--teal-border);
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    background: rgba(45,212,191,0.03);
+  }
+
+  .script-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-style: normal;
+    padding-left: 2px;
+  }
+
+  /* callout */
+  .callout {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+
+  .callout-icon { font-size: 16px; flex-shrink: 0; }
+  .callout-body { color: var(--text-muted); }
+  .callout-body strong { color: var(--text); }
+
+  .callout.c-insight { background: rgba(96,165,250,0.05);  border: 1px solid rgba(96,165,250,0.18); }
+  .callout.c-warn    { background: rgba(251,146,60,0.05);  border: 1px solid rgba(251,146,60,0.2); }
+  .callout.c-crit    { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.2); }
+  .callout.c-tip     { background: rgba(74,222,128,0.04);  border: 1px solid rgba(74,222,128,0.18); }
+
+  /* section divider */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 20px 0 10px;
+    padding-left: 52px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* loop banner */
+  .loop-banner {
+    margin-left: 52px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(45,212,191,0.04);
+    border: 1px dashed rgba(45,212,191,0.2);
+    border-radius: 8px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .loop-icon { font-size: 18px; color: var(--teal); flex-shrink: 0; }
+
+  /* decision grid */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .decision-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+
+  .decision-box {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .decision-box-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .decision-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .decision-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .decision-item::before {
+    content: '→';
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .side-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .side-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sph-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sph-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .side-panel-body { padding: 14px 16px; }
+
+  .rules-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .rule-item {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border-left: 3px solid var(--border-bright);
+  }
+
+  .rule-item strong { color: var(--text); }
+
+  .r-tip  { border-left-color: var(--teal); }
+  .r-rule { border-left-color: var(--blue); }
+  .r-warn { border-left-color: var(--yellow); }
+  .r-stop { border-left-color: var(--red); }
+  .r-purple { border-left-color: var(--purple); }
+  .r-green  { border-left-color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PAGE HEADER
+═══════════════════════════════════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="overline">IVA · Appointment Management · Base Design</div>
+    <h1>[Practice Name] — Appointment Management IVA</h1>
+    <p>Inbound scheduling, confirmation, reschedule &amp; cancellation · [IVA Name] · [PMS Platform]</p>
+  </div>
+  <div class="header-badges">
+    <span class="header-badge teal">Inbound</span>
+    <span class="header-badge green">Scheduling</span>
+    <span class="header-badge">Confirm / Reschedule</span>
+    <span class="header-badge yellow">Cancellation Deflection</span>
+    <span class="header-badge purple">ANI Dip · DOB Auth</span>
+    <span class="header-badge orange">HIPAA Safe</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TWO-COLUMN LAYOUT
+═══════════════════════════════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- ── MAIN FLOW COLUMN ── -->
+  <div class="main-flow">
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 1 — ANI DIP + GREETING                    -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-purple">
+      <div class="step-spine">
+        <div class="step-num">01</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">Pre-Answer · ANI Dip</div>
+        <div class="card-title">Call Arrival &amp; ANI Lookup</div>
+        <div class="card-body">
+          Before the call is answered, the IVA fires an ANI lookup against the PMS using the inbound caller ID. This is silent and completes in parallel with the greeting. If the ANI resolves to a known patient record, the session is pre-populated with that patient's context — no need to ask again. If the ANI matches multiple records, defer to DOB verification to resolve.
+        </div>
+        <div class="pill-row">
+          <span class="pill">ANI → PMS lookup</span>
+          <span class="pill">fires pre-answer</span>
+          <span class="pill">session pre-load</span>
+          <span class="pill">no delay to caller</span>
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--purple);">Greeting Script</div>
+          <div class="script-text">
+            "Thank you for calling [Practice Name]. This is [IVA Name]. How can I help you today?"
+          </div>
+          <div class="script-note">▸ Do not identify as AI/virtual. Use a human name. Warm, natural cadence — not robotic.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 2 — INTENT CAPTURE                        -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-teal">
+      <div class="step-spine">
+        <div class="step-num">02</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">NLU · Intent Routing</div>
+        <div class="card-title">Intent Capture &amp; Call Routing</div>
+        <div class="card-body">
+          The IVA listens to the caller's open-ended response and classifies intent. No menus, no DTMF trees. The caller says what they need; the IVA routes accordingly. For ambiguous input, one targeted clarifying question is asked — never more.
+        </div>
+        <div class="intent-grid">
+          <div class="intent-box i-sched">
+            <div class="intent-label">Schedule New Appt</div>
+            <div class="intent-action">New patient or returning patient wants to book. Proceeds to auth → availability → booking.</div>
+          </div>
+          <div class="intent-box i-existing">
+            <div class="intent-label">Confirm Existing Appt</div>
+            <div class="intent-action">Caller wants to know when their appointment is. Auth → PMS lookup → read-back.</div>
+          </div>
+          <div class="intent-box i-cancel">
+            <div class="intent-label">Cancel / Reschedule</div>
+            <div class="intent-action">Route to cancellation deflection flow. Always offer two specific alternatives before processing cancel.</div>
+          </div>
+          <div class="intent-box i-info">
+            <div class="intent-label">General Info</div>
+            <div class="intent-action">Hours, location, services, insurance. Answer from configured knowledge base — no transfer needed.</div>
+          </div>
+          <div class="intent-box i-transfer">
+            <div class="intent-label">Clinical / Billing</div>
+            <div class="intent-action">Clinical question, insurance dispute, billing inquiry — warm transfer with context packet.</div>
+          </div>
+          <div class="intent-box i-urgent">
+            <div class="intent-label">Emergency / Urgent</div>
+            <div class="intent-action">"If this is a medical emergency, please hang up and call 9-1-1." No triage. Immediate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 3 — PATIENT AUTHENTICATION                -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-blue">
+      <div class="step-spine">
+        <div class="step-num">03</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">Authentication · HIPAA Gate</div>
+        <div class="card-title">Patient Identity Verification</div>
+        <div class="card-body">
+          Authentication gates all account-level actions: booking, confirming, rescheduling, and cancelling. ANI match establishes a soft pre-auth but DOB is always collected as the primary verification factor. All failure language is generic — never disclose whether a record exists or does not exist.
+        </div>
+
+        <div class="decision-grid three-col" style="margin-top:14px;">
+          <div class="decision-box">
+            <div class="decision-box-label" style="color:var(--green);">✓ ANI Match Found</div>
+            <div class="decision-list">
+              <div class="decision-item">Pre-populated patient context loaded</div>
+              <div class="decision-item">Ask DOB to confirm: "Can I verify your date of birth?"</div>
+              <div class="decision-item">DOB match → authenticated, proceed</div>
+              <div class="decision-item">DOB mismatch → treat as unknown caller</div>
+            </div>
+          </div>
+          <div class="decision-box">
+            <div class="decision-box-label" style="color:var(--yellow);">~ ANI No Match / Unknown</div>
+            <div class="decision-list">
+              <div class="decision-item">Ask for alternate phone number on file (not name)</div>
+              <div class="decision-item">PMS lookup by phone number</div>
+              <div class="decision-item">If found → collect DOB to confirm</div>
+              <div class="decision-item">If still no match → new patient flow</div>
+            </div>
+          </div>
+          <div class="decision-box">
+            <div class="decision-box-label" style="color:var(--red);">✗ Auth Failure</div>
+            <div class="decision-list">
+              <div class="decision-item">Max 2 attempts per session</div>
+              <div class="decision-item">Generic failure language — no PHI disclosed</div>
+              <div class="decision-item">Offer warm transfer to front desk</div>
+              <div class="decision-item">Log attempt; flag for review if repeated</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout c-crit">
+          <div class="callout-icon">🔒</div>
+          <div class="callout-body"><strong>HIPAA safe language only.</strong> Auth failure responses must never confirm or deny the existence of a patient record. Use: "I wasn't able to verify that information — let me connect you with our team." Never: "I don't see anyone with that name."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- SECTION BREAK                                   -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="section-title">Scheduling Flows</div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 4 — NEW PATIENT INTAKE                    -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-green">
+      <div class="step-spine">
+        <div class="step-num">04</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">New Patient · Intake</div>
+        <div class="card-title">New Patient Registration</div>
+        <div class="card-body">
+          Only triggered when PMS lookup returns no matching record after all lookup strategies are exhausted. Collect minimum required fields to create a record. Do not collect what the PMS doesn't require — keep the interaction short. Required fields are PMS-dependent and should be confirmed during implementation.
+        </div>
+        <div class="split-wrap three-col" style="margin-left:0; margin-top:12px;">
+          <div class="split-card sc-green">
+            <div class="split-tag">Required Fields</div>
+            <h4>Minimum to Create Record</h4>
+            <p>First name, last name, date of birth, phone number. Confirm with PMS requirements — some platforms require sex/gender or email. Never collect more than required.</p>
+          </div>
+          <div class="split-card sc-teal">
+            <div class="split-tag">Optional / Contextual</div>
+            <h4>Collect If Relevant</h4>
+            <p>Insurance information may be collected here or deferred to the visit. Collect only if needed to route to the correct appointment type (e.g., insurance-specific provider lanes).</p>
+          </div>
+          <div class="split-card sc-blue">
+            <div class="split-tag">PMS Write</div>
+            <h4>Create Record First</h4>
+            <p>Patient record must be created in the PMS before attempting to book. Run a duplicate check prior to write. If a likely duplicate is found, surface to front desk rather than creating a new record.</p>
+          </div>
+        </div>
+        <div class="callout c-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body"><strong>Always run a duplicate check</strong> before creating a new patient record. Pass first name + last name + DOB as the match query. A fuzzy match on a likely duplicate should route to warm transfer, not create a second record.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 5 — AVAILABILITY + BOOKING                -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-teal">
+      <div class="step-spine">
+        <div class="step-num">05</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">PMS Query · Slot Offer</div>
+        <div class="card-title">Availability Query &amp; Slot Offer</div>
+        <div class="card-body">
+          Query the PMS for open slots. Apply relevant filters (provider, location, appointment type) based on patient context. Present exactly two specific, named options — a day, time, and provider. Never open-ended. Never a list of three or more. If neither option works, offer two more — do not offer the same slots again.
+        </div>
+        <div class="split-wrap" style="margin-left:0; margin-top:12px;">
+          <div class="split-card sc-teal">
+            <div class="split-tag">Slot Presentation Rule</div>
+            <h4>Always Offer Two — Never More</h4>
+            <p>Name the day, time, and provider for each option. "I have Tuesday the 10th at 9 AM with Dr. [Name], or Thursday the 12th at 2 PM. Which works better for you?"</p>
+          </div>
+          <div class="split-card sc-blue">
+            <div class="split-tag">No Availability</div>
+            <h4>Graceful No-Slot Path</h4>
+            <p>If no slots are available within a reasonable window, offer to leave the caller's info for a callback when a slot opens — never dead-end. Optionally offer a waitlist capture.</p>
+          </div>
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--teal);">Slot Offer — Sample Script</div>
+          <div class="script-text">
+            "I have [Day, Date] at [Time] with [Provider], or [Day, Date] at [Time]. Which of those works better for you?"
+          </div>
+          <div class="script-note">▸ Named days ("Tuesday the 10th"), not numeric dates. Conversational, not form-filling.</div>
+        </div>
+        <div class="callout c-insight">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body"><strong>Don't ask what you already know.</strong> If the PMS has the patient's preferred provider or location on file, pre-filter availability to that preference — don't ask the caller to repeat it. A good front desk agent pulls up the chart first.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 6 — BOOKING CONFIRMATION                  -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-green">
+      <div class="step-spine">
+        <div class="step-num">06</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">PMS Write · Confirmation</div>
+        <div class="card-title">Booking Confirmation &amp; Read-Back</div>
+        <div class="card-body">
+          After the caller selects a slot, confirm all booking details verbally before executing the PMS write. Once confirmed, write the appointment to the PMS and deliver a full read-back. Never skip the read-back — callers may be writing it down.
+        </div>
+        <div class="split-wrap" style="margin-left:0; margin-top:12px;">
+          <div class="split-card sc-green">
+            <div class="split-tag">Pre-Write Confirm</div>
+            <h4>Verify Before Booking</h4>
+            <p>Read back: patient name, appointment date, time, provider, and location. Get verbal confirmation before the PMS write. If the caller corrects anything, re-query and re-present options.</p>
+          </div>
+          <div class="split-card sc-blue">
+            <div class="split-tag">Post-Write Confirmation</div>
+            <h4>Full Confirmation Read-Back</h4>
+            <p>After the PMS write succeeds, confirm that the appointment is booked. Mention that a reminder notification may follow (if configured). Warm, reassuring close — not abrupt.</p>
+          </div>
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--green);">Confirmation Script</div>
+          <div class="script-text">
+            "You're all set. Your appointment is confirmed for [Day, Date] at [Time] with [Provider] at [Location]. You may receive a reminder closer to your visit. Is there anything else I can help you with?"
+          </div>
+          <div class="script-note">▸ "You may receive a reminder" — not "I'll send you a reminder." The IVA does not own the SMS/email channel.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- SECTION BREAK                                   -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="section-title">Existing Appointment Flows</div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 7 — CONFIRM EXISTING                      -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-blue">
+      <div class="step-spine">
+        <div class="step-num">07</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">PMS Lookup · Appointment Detail</div>
+        <div class="card-title">Confirm Existing Appointment</div>
+        <div class="card-body">
+          After auth, query the PMS for upcoming appointments for the patient. If one upcoming appointment is found, read it back. If multiple are found, confirm the nearest one first and offer to hear others. If none are found, offer to schedule.
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--blue);">Confirmation Read-Back</div>
+          <div class="script-text">
+            "You have an appointment on [Day, Date] at [Time] with [Provider] at [Location]. Is there anything you'd like to change, or does everything look good?"
+          </div>
+          <div class="script-note">▸ After the read-back, always offer next-action options: confirm it's fine, reschedule, or cancel. Never dead-end.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 8 — RESCHEDULE                            -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-orange">
+      <div class="step-spine">
+        <div class="step-num">08</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">PMS Write · Reschedule</div>
+        <div class="card-title">Reschedule Existing Appointment</div>
+        <div class="card-body">
+          Reschedule is a single atomic operation in the PMS — cancel + rebook in one call where supported. Do not manually cancel and then rebook as separate steps; this risks orphaned records and gaps in audit trails. Follow the same slot-offer rules: two specific options, named days.
+        </div>
+        <div class="split-wrap" style="margin-left:0; margin-top:12px;">
+          <div class="split-card sc-orange">
+            <div class="split-tag">PMS Reschedule Op</div>
+            <h4>Atomic Cancel + Rebook</h4>
+            <p>Use the PMS reschedule endpoint where available. This atomically cancels the existing slot and books the new one — reducing the risk of double-booking or a failed mid-operation state.</p>
+          </div>
+          <div class="split-card sc-teal">
+            <div class="split-tag">Slot Offer</div>
+            <h4>Same Rules as New Booking</h4>
+            <p>Offer two specific alternatives for the new time. Match the same provider and location unless the caller requests otherwise. Name the day, date, time, and provider.</p>
+          </div>
+        </div>
+        <div class="callout c-insight">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body"><strong>Confirm before executing.</strong> Read back the old appointment and the new slot before writing. "I'll move your [original day/time] to [new day/time] — does that work?" One confirmation step prevents unnecessary re-calls.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 9 — CANCELLATION DEFLECTION               -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-yellow">
+      <div class="step-spine">
+        <div class="step-num">09</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">Deflection · Reschedule Offer</div>
+        <div class="card-title">Cancellation Deflection</div>
+        <div class="card-body">
+          Cancellation deflection is not a courtesy — it is a protocol. The IVA must proactively offer two real, bookable alternative slots pulled from the PMS before processing any cancellation. The offer must be specific and immediate. "Would you like to reschedule?" is not deflection. Two named, real slots with dates and times is deflection.
+        </div>
+        <div class="split-wrap" style="margin-left:0; margin-top:12px;">
+          <div class="split-card sc-yellow">
+            <div class="split-tag">Deflection Step 1</div>
+            <h4>Acknowledge + Offer Two Slots</h4>
+            <p>Do not simply ask "would you like to reschedule?" — query the PMS first, pull two real available alternatives, and offer them by name. The caller should have something concrete to say yes to.</p>
+          </div>
+          <div class="split-card sc-orange">
+            <div class="split-tag">Deflection Step 2</div>
+            <h4>If Caller Declines Reschedule</h4>
+            <p>Acknowledge, then proceed to cancel. Collect a cancellation reason (if required by PMS). Confirm the appointment has been cancelled. Close warmly — never abrupt or cold after a cancellation.</p>
+          </div>
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--yellow);">Deflection Script</div>
+          <div class="script-text">
+            "No problem — before I cancel, I have [Day, Date] at [Time] or [Day, Date] at [Time] available. Would either of those work for you?"
+          </div>
+          <div class="script-note">▸ Pull live availability from the PMS. Never invent or guess slots. If no alternatives are available, proceed directly to cancellation.</div>
+        </div>
+        <div class="callout c-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body"><strong>Cancellation reason codes:</strong> Some PMS platforms require a valid reason code for every cancellation. Cache valid reason codes at session init — do not hardcode. A missing code will cause the API call to reject.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- SECTION BREAK                                   -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="section-title">Transfer &amp; Escalation</div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 10 — TRANSFER + CLOSE                     -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-red">
+      <div class="step-spine">
+        <div class="step-num">10</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">Escalation · Warm Transfer</div>
+        <div class="card-title">Escalation Paths &amp; Transfer Rules</div>
+        <div class="card-body">
+          All transfers are warm transfers with a context packet. The IVA never drops a caller into a queue cold. Every transfer includes a verbal handoff summary and passes structured context to the receiving agent or system: name, intent, auth status, and any relevant appointment detail.
+        </div>
+        <div class="decision-grid" style="margin-top:12px;">
+          <div class="decision-box">
+            <div class="decision-box-label" style="color:var(--orange);">Transfer Triggers</div>
+            <div class="decision-list">
+              <div class="decision-item">Clinical question (symptom, medication, clinical advice)</div>
+              <div class="decision-item">Insurance or billing dispute</div>
+              <div class="decision-item">Complaint — acknowledge + transfer with flag</div>
+              <div class="decision-item">Auth failure after max attempts</div>
+              <div class="decision-item">Caller requests agent (any point in call)</div>
+              <div class="decision-item">PMS API failure / data error</div>
+            </div>
+          </div>
+          <div class="decision-box">
+            <div class="decision-box-label" style="color:var(--blue);">Context Packet — Every Transfer</div>
+            <div class="decision-list">
+              <div class="decision-item">Patient name + DOB</div>
+              <div class="decision-item">Caller intent (what they called about)</div>
+              <div class="decision-item">Auth status (verified / unverified)</div>
+              <div class="decision-item">Appointment context if applicable</div>
+              <div class="decision-item">Reason for transfer</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout c-crit">
+          <div class="callout-icon">🚨</div>
+          <div class="callout-body"><strong>Medical emergency protocol:</strong> If the caller describes an emergency or urgent medical concern at any point, respond immediately: "If this is a medical emergency, please hang up and call 9-1-1 now." Do not attempt to triage. Do not hold the caller in the IVA flow.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- STEP 11 — CALL CLOSE                           -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="flow-step v-teal">
+      <div class="step-spine">
+        <div class="step-num">11</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="card-tag">Call Close · Session End</div>
+        <div class="card-title">Closing &amp; Session Wrap</div>
+        <div class="card-body">
+          Every call ends with a single closing prompt before goodbye. The IVA never hangs up abruptly. After the task is complete, ask if there's anything else needed — then close warmly. The close should never feel like the IVA is in a hurry to end the call.
+        </div>
+        <div class="script-box">
+          <div class="script-label" style="color:var(--teal);">Closing Script</div>
+          <div class="script-text">
+            "Is there anything else I can help you with today?" [pause] "Great — thanks for calling [Practice Name]. Have a good [day / evening]."
+          </div>
+          <div class="script-note">▸ One closing question only. Do not repeat it if the caller says no. Match the time of day for the farewell — "have a good day" vs "have a good evening."</div>
+        </div>
+
+        <div class="loop-banner">
+          <div class="loop-icon">↩</div>
+          <div>If caller has a second intent ("one more thing"), loop back to intent capture at Step 02 — do not re-authenticate. Auth persists for the session.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-flow -->
+
+  <!-- ── SIDEBAR COLUMN ── -->
+  <div class="sidebar">
+
+    <!-- Core Scheduling Principles -->
+    <div class="side-panel">
+      <div class="side-panel-header">
+        <div class="sph-dot" style="background:var(--green);"></div>
+        <span class="sph-label">Core Scheduling Principles</span>
+      </div>
+      <div class="side-panel-body">
+        <div class="rules-list">
+          <div class="rule-item r-tip"><strong>Always offer two options:</strong> Never open-ended, never a list of three or more. Two specific, named slots — day, date, time, and provider.</div>
+          <div class="rule-item r-tip"><strong>Confirm before writing:</strong> Read back all booking details and get verbal confirmation before executing any PMS write.</div>
+          <div class="rule-item r-tip"><strong>Cancellation deflection is mandatory:</strong> Pull two real alternatives from the PMS and offer them before processing any cancellation. A vague "would you like to reschedule?" does not count.</div>
+          <div class="rule-item r-tip"><strong>Never a dead end:</strong> Every flow terminates with an action, not silence. If something can't be completed, offer a warm transfer or callback capture.</div>
+          <div class="rule-item r-tip"><strong>Named days, not dates:</strong> "Tuesday the 10th" — not "10/10." Conversational. The caller may be writing it down.</div>
+          <div class="rule-item r-rule"><strong>Don't ask what you know:</strong> If the PMS has the patient's preferred provider, location, or insurance on file — use it. Don't make them repeat it.</div>
+          <div class="rule-item r-rule"><strong>Full read-back every time:</strong> Confirmation must include date, time, provider, and location. Never assume the caller already knows.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Authentication Rules -->
+    <div class="side-panel">
+      <div class="side-panel-header">
+        <div class="sph-dot" style="background:var(--blue);"></div>
+        <span class="sph-label">Authentication Rules</span>
+      </div>
+      <div class="side-panel-body">
+        <div class="rules-list">
+          <div class="rule-item r-rule"><strong>ANI dip fires pre-answer:</strong> Silent, zero delay. Session pre-populated before the greeting completes.</div>
+          <div class="rule-item r-rule"><strong>DOB is the primary gate:</strong> All account actions require DOB verification, even when ANI matched. ANI alone is not sufficient.</div>
+          <div class="rule-item r-rule"><strong>Unknown callers:</strong> Ask for alternate phone number on file — not name. Phone → PMS lookup → then DOB.</div>
+          <div class="rule-item r-stop"><strong>Max 2 auth attempts:</strong> After the second failure, warm transfer. No third attempt.</div>
+          <div class="rule-item r-stop"><strong>HIPAA language only:</strong> Auth failure must never reveal whether a record exists. Use: "I wasn't able to verify that — let me connect you with our team."</div>
+          <div class="rule-item r-warn"><strong>Auth persists for the session:</strong> Once verified, do not re-authenticate on subsequent intents in the same call.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation Design Principles -->
+    <div class="side-panel">
+      <div class="side-panel-header">
+        <div class="sph-dot" style="background:var(--cyan);"></div>
+        <span class="sph-label">Conversation Design Principles</span>
+      </div>
+      <div class="side-panel-body">
+        <div class="rules-list">
+          <div class="rule-item r-tip"><strong>Sound human:</strong> The IVA is a named front desk agent. Never identify as AI or virtual unless legally required.</div>
+          <div class="rule-item r-tip"><strong>Binary choices only:</strong> Never more than two options at a time. No numbered menus, no verbal lists.</div>
+          <div class="rule-item r-tip"><strong>Plain language:</strong> "Date of birth" not "DOB." "Your insurance card" not "member ID." No jargon, no acronyms.</div>
+          <div class="rule-item r-tip"><strong>Patience on silence:</strong> Extended timeout before re-prompting. Give the caller a moment to think.</div>
+          <div class="rule-item r-purple"><strong>No filler language:</strong> Drop "I'd be happy to" and "I can certainly." Use: "Got it," "You're all set," "No problem." Natural, direct, confident.</div>
+          <div class="rule-item r-purple"><strong>SMS/email ownership:</strong> Say "you may receive a reminder" — not "I'll send you a text." The IVA does not own downstream notification channels.</div>
+          <div class="rule-item r-purple"><strong>Never recite lists:</strong> Don't read off provider names, insurance plans, or locations. Ask what the caller has, then confirm.</div>
+          <div class="rule-item r-rule"><strong>One question at a time:</strong> Never stack two questions in the same turn. Ask one, wait, then ask the next.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation Flags -->
+    <div class="side-panel">
+      <div class="side-panel-header">
+        <div class="sph-dot" style="background:var(--orange);"></div>
+        <span class="sph-label">Implementation Flags</span>
+      </div>
+      <div class="side-panel-body">
+        <div class="rules-list">
+          <div class="rule-item r-warn"><strong>[IVA Name]:</strong> Replace with the agreed agent persona name for this deployment. Align with client-approved name and voice.</div>
+          <div class="rule-item r-warn"><strong>[PMS Platform]:</strong> Confirm the PMS API reference guide is scoped and endpoint mappings are complete before beginning call flow scripting.</div>
+          <div class="rule-item r-warn"><strong>Appointment types:</strong> Confirm exact appointment type names as configured in the PMS scheduler. Type names are often environment-specific and cannot be assumed from documentation.</div>
+          <div class="rule-item r-warn"><strong>Cancellation reason codes:</strong> Pull valid codes from the PMS at session init. Do not hardcode. Codes vary by environment and may change.</div>
+          <div class="rule-item r-warn"><strong>Provider/location IDs:</strong> Cache provider and department/location IDs at session init rather than querying per-call where possible. Reduces latency and QPS consumption.</div>
+          <div class="rule-item r-stop"><strong>After-hours routing:</strong> Define the after-hours handling path before go-live: voicemail, live overflow, hold, or graceful disconnect. Confirm with client.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error & Exception Handling -->
+    <div class="side-panel">
+      <div class="side-panel-header">
+        <div class="sph-dot" style="background:var(--red);"></div>
+        <span class="sph-label">Error &amp; Exception Handling</span>
+      </div>
+      <div class="side-panel-body">
+        <div class="rules-list">
+          <div class="rule-item r-stop"><strong>PMS API failure:</strong> If a booking or cancellation write fails, do not tell the caller the appointment is confirmed. Acknowledge the issue and warm transfer with context.</div>
+          <div class="rule-item r-stop"><strong>No available slots:</strong> Never dead-end. Offer waitlist capture or callback. Warm transfer if caller prefers to speak to someone.</div>
+          <div class="rule-item r-stop"><strong>Duplicate patient record detected:</strong> Do not create a second record. Surface to front desk via warm transfer — do not resolve duplicates in the IVA layer.</div>
+          <div class="rule-item r-warn"><strong>Unrecognized intent:</strong> Max two clarification attempts. If still unresolved, default to warm transfer — never loop indefinitely.</div>
+          <div class="rule-item r-warn"><strong>Extended silence:</strong> Re-prompt once with a shorter, simpler version of the question. After a second silence, offer a transfer.</div>
+          <div class="rule-item r-rule"><strong>DTMF fallback:</strong> If NLU confidence is consistently low for a given intent, configure DTMF fallback for that branch. Do not force NLU where it isn't reliable.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /layout -->
+</body>
+</html>
