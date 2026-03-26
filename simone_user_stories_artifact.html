@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>User Stories & Acceptance Criteria — Healthcare IVA Redesign | Simone Wilson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#080D13;--bg2:#0D1520;--bg3:#111D2E;--bg4:#0A1219;
+    --teal:#1ABFBF;--teal-dk:#0E8A8A;--teal-lt:rgba(26,191,191,0.12);
+    --gold:#D4A843;--gold-lt:#F0C96A;--gold-pale:rgba(212,168,67,0.1);
+    --red:#E05A5A;--red-pale:rgba(224,90,90,0.1);
+    --green:#3DD68C;--green-pale:rgba(61,214,140,0.1);
+    --white:#F0F4F8;--muted:#6B7E94;--border:rgba(26,191,191,0.15);
+    --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--white);font-family:var(--font-body);font-weight:300;line-height:1.7;overflow-x:hidden;}
+
+  /* NOISE */
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.35;}
+
+  /* HEADER */
+  .doc-header{
+    padding:60px 64px 52px;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(26,191,191,0.04) 0%,transparent 100%);
+    position:relative;overflow:hidden;
+  }
+  .doc-header::after{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(26,191,191,0.07) 0%,transparent 65%);pointer-events:none;}
+  .header-meta{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+  .header-badge{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--bg);background:var(--teal);padding:5px 14px;
+    clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  }
+  .header-badge.gold{background:var(--gold);}
+  .doc-eyebrow{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;}
+  .doc-title{font-family:var(--font-display);font-size:clamp(30px,4vw,46px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;color:var(--white);margin-bottom:12px;}
+  .doc-title span{color:var(--teal);}
+  .doc-subtitle{font-size:16px;color:rgba(240,244,248,0.6);max-width:680px;line-height:1.7;margin-bottom:36px;}
+  .doc-meta-grid{display:flex;flex-wrap:wrap;gap:32px;}
+  .doc-meta-item{}
+  .doc-meta-label{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:4px;}
+  .doc-meta-val{font-family:var(--font-mono);font-size:13px;color:var(--white);}
+  .doc-meta-val.teal{color:var(--teal);}
+
+  /* SPRINT LEGEND */
+  .sprint-legend{
+    display:flex;gap:24px;flex-wrap:wrap;
+    padding:20px 64px;
+    border-bottom:1px solid var(--border);
+    background:var(--bg2);
+  }
+  .legend-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+  .legend-dot{width:8px;height:8px;border-radius:50%;}
+  .legend-dot.must{background:var(--red);}
+  .legend-dot.should{background:var(--gold);}
+  .legend-dot.could{background:var(--teal);}
+
+  /* LAYOUT */
+  .main{padding:0 64px 80px;}
+
+  /* EPIC HEADER */
+  .epic-block{margin-top:52px;}
+  .epic-header{
+    display:flex;align-items:center;gap:16px;
+    padding:20px 28px;
+    background:var(--bg2);border:1px solid var(--border);
+    border-left:3px solid var(--teal);
+    margin-bottom:2px;
+  }
+  .epic-id{font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:0.1em;}
+  .epic-title{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--white);}
+  .epic-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--bg);background:var(--teal);padding:3px 10px;margin-left:auto;flex-shrink:0;}
+
+  /* USER STORY CARD */
+  .story-card{
+    background:var(--bg3);
+    border:1px solid var(--border);
+    border-top:none;
+    margin-bottom:0;
+    transition:border-color 0.3s;
+    position:relative;
+  }
+  .story-card:hover{border-color:rgba(26,191,191,0.3);}
+  .story-card+.story-card{border-top:1px solid rgba(26,191,191,0.08);}
+  .story-card:last-child{margin-bottom:0;}
+
+  .story-header{
+    display:grid;grid-template-columns:auto 1fr auto;
+    align-items:center;gap:16px;
+    padding:18px 28px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .story-header:hover .story-id{color:var(--teal);}
+
+  .story-id{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.1em;min-width:80px;}
+  .story-title{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--white);}
+  .priority-pill{
+    font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+    padding:3px 10px;border-radius:0;
+    flex-shrink:0;
+  }
+  .priority-pill.must{color:var(--red);background:var(--red-pale);border:1px solid rgba(224,90,90,0.25);}
+  .priority-pill.should{color:var(--gold);background:var(--gold-pale);border:1px solid rgba(212,168,67,0.25);}
+  .priority-pill.could{color:var(--teal);background:var(--teal-lt);border:1px solid rgba(26,191,191,0.25);}
+
+
+  .story-body{display:block;padding:0 28px 28px;}
+  .story-body.open{display:block;}
+
+  /* Story As / Want / So */
+  .story-statement{
+    background:var(--bg2);border-left:3px solid var(--teal);
+    padding:18px 24px;margin-bottom:24px;
+    font-size:14px;line-height:1.8;color:rgba(240,244,248,0.8);
+  }
+  .story-statement strong{color:var(--teal);font-weight:500;}
+
+  /* Sections within card */
+  .card-section{margin-bottom:24px;}
+  .card-section:last-child{margin-bottom:0;}
+  .section-label{
+    font-family:var(--font-mono);font-size:9px;color:var(--gold);
+    letter-spacing:0.2em;text-transform:uppercase;
+    margin-bottom:12px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .section-label::after{content:'';flex:1;height:1px;background:rgba(212,168,67,0.2);}
+
+  /* AC List */
+  .ac-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .ac-item{
+    display:flex;gap:12px;align-items:flex-start;
+    font-size:13px;line-height:1.65;color:rgba(240,244,248,0.72);
+    padding:10px 14px;
+    background:rgba(255,255,255,0.025);
+    border:1px solid rgba(255,255,255,0.06);
+    transition:background 0.2s,border-color 0.2s;
+  }
+  .ac-item:hover{background:rgba(26,191,191,0.05);border-color:rgba(26,191,191,0.15);}
+  .ac-check{
+    font-family:var(--font-mono);font-size:11px;color:var(--teal);
+    flex-shrink:0;margin-top:1px;
+  }
+  .ac-item.edge .ac-check{color:var(--gold);}
+  .ac-item.edge{border-color:rgba(212,168,67,0.1);}
+  .ac-item.edge:hover{background:rgba(212,168,67,0.04);}
+  .ac-item.qa .ac-check{color:var(--green);}
+  .ac-item.qa{border-color:rgba(61,214,140,0.1);}
+  .ac-item.qa:hover{background:rgba(61,214,140,0.04);}
+
+  /* Tags row */
+  .tag-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;border:1px solid rgba(107,126,148,0.25);padding:3px 10px;transition:color 0.2s,border-color 0.2s;}
+  .tag:hover{color:var(--white);border-color:var(--muted);}
+
+
+
+  /* SUMMARY TABLE */
+  .summary-section{margin-top:60px;}
+  .summary-table{width:100%;border-collapse:collapse;}
+  .summary-table th{
+    font-family:var(--font-mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--muted);padding:12px 16px;text-align:left;
+    border-bottom:1px solid var(--border);background:var(--bg2);
+  }
+  .summary-table td{
+    font-size:13px;color:rgba(240,244,248,0.75);
+    padding:12px 16px;border-bottom:1px solid rgba(26,191,191,0.06);
+    vertical-align:middle;
+  }
+  .summary-table tr:hover td{background:rgba(26,191,191,0.03);}
+  .summary-table td:first-child{font-family:var(--font-mono);font-size:11px;color:var(--teal);}
+
+
+  /* TOTALS BAR */
+  .totals-bar{
+    display:flex;gap:48px;flex-wrap:wrap;
+    padding:28px 32px;
+    background:var(--bg2);border:1px solid var(--border);
+    margin-top:2px;
+  }
+  .total-item{}
+  .total-num{font-family:var(--font-display);font-size:34px;font-weight:800;letter-spacing:-0.04em;color:var(--teal);line-height:1;}
+  .total-num.gold{color:var(--gold);}
+  .total-label{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;}
+
+  /* FOOTER */
+  .doc-footer{
+    margin-top:60px;padding:28px 64px;
+    border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:16px;
+  }
+  .footer-brand{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:-0.02em;}
+  .footer-brand span{color:var(--teal);}
+  .footer-meta{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;}
+  .footer-contact{font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:0.06em;text-decoration:none;}
+
+  /* SCROLL REVEAL */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);}
+  .reveal.visible{opacity:1;transform:none;}
+  .d1{transition-delay:0.08s;}.d2{transition-delay:0.16s;}.d3{transition-delay:0.24s;}
+
+  /* PRINT HINT */
+  .print-hint{
+    font-family:var(--font-mono);font-size:10px;color:var(--muted);
+    letter-spacing:0.1em;padding:10px 64px;border-bottom:1px solid var(--border);
+    background:rgba(26,191,191,0.03);display:flex;align-items:center;gap:8px;
+  }
+  .print-hint span{color:var(--teal);}
+
+  @media(max-width:768px){
+    .doc-header,.main,.doc-footer,.print-hint{padding-left:24px;padding-right:24px;}
+    .sprint-legend{padding:16px 24px;}
+    .story-header{grid-template-columns:auto 1fr auto;}
+
+    .doc-title{font-size:26px;}
+  }
+  @media print{
+    body{background:#fff;color:#111;}
+    .story-body{display:block!important;}
+    .chevron,.print-hint{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- PRINT HINT -->
+<div class="print-hint">
+  <span>◈</span> Portfolio Artifact — Healthcare IVA Redesign &nbsp;·&nbsp; Click any story row to expand &nbsp;·&nbsp; Ctrl+P to export PDF
+</div>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="header-meta">
+    <div class="header-badge">Portfolio Artifact</div>
+    <div class="header-badge gold">Sprint-Ready</div>
+    <div class="doc-eyebrow">Engineering Handoff Document</div>
+  </div>
+  <h1 class="doc-title">User Stories &<br/><span>Acceptance Criteria</span></h1>
+  <p class="doc-subtitle">Healthcare IVA Redesign — Appointment Management System<br/>
+  Sprint-ready user story set complete with role definitions, story points, edge case coverage, and QA validation criteria. Produced as Product Owner during enterprise re-architecture of a broken IVA system serving a regional health network.</p>
+
+  <div class="doc-meta-grid">
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">Product Owner</div>
+      <div class="doc-meta-val teal">Simone Wilson</div>
+    </div>
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">Project</div>
+      <div class="doc-meta-val">Healthcare IVA Redesign</div>
+    </div>
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">Sprint Cycle</div>
+      <div class="doc-meta-val">2-Week Sprints · Agile/Scrum</div>
+    </div>
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">System Integration</div>
+      <div class="doc-meta-val">EHR/PMS · ANI Lookup · IVA Platform</div>
+    </div>
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">Status</div>
+      <div class="doc-meta-val teal">✓ Shipped — Sanitized for Portfolio</div>
+    </div>
+    <div class="doc-meta-item">
+      <div class="doc-meta-label">Methodology</div>
+      <div class="doc-meta-val">Agile · MoSCoW Prioritization · Sprint-Based Delivery</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPRINT LEGEND -->
+<div class="sprint-legend">
+  <div class="legend-item"><div class="legend-dot must"></div> Must Have (MVP)</div>
+  <div class="legend-item"><div class="legend-dot should"></div> Should Have (Sprint 2)</div>
+  <div class="legend-item"><div class="legend-dot could"></div> Could Have (Backlog)</div>
+  <div class="legend-item" style="margin-left:auto;"><span style="color:var(--teal);font-family:var(--font-mono);font-size:10px;">AC = Acceptance Criteria &nbsp;·&nbsp; EC = Edge Case &nbsp;·&nbsp; QA = QA Validation</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EPIC 1 — CALLER IDENTIFICATION & SMART ROUTING
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="epic-block reveal">
+    <div class="epic-header">
+      <div class="epic-id">EPIC-01</div>
+      <div class="epic-title">Caller Identification & Intelligent Routing</div>
+      <div class="epic-badge">Core Infrastructure</div>
+    </div>
+
+    <!-- US-101 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-101</div>
+        <div class="story-title">ANI Lookup & Patient Record Retrieval</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> returning patient calling to manage an appointment,<br/>
+          <strong>I want</strong> the system to automatically recognize my phone number and retrieve my record,<br/>
+          <strong>So that</strong> I don't have to re-enter my identifying information and can be routed immediately to the correct service.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given a caller dials in from a registered phone number, when the ANI lookup executes, then the system retrieves the matching patient record from the EHR/PMS within 2 seconds of call answer.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given a patient record is successfully retrieved, when the IVA greets the caller, then the greeting includes the patient's preferred first name (e.g., "Hi Sarah, welcome back").</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given a successful match, when routing logic executes, then the caller is directed to their primary care provider's scheduling queue within one IVA turn — no additional identification steps required.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given the ANI lookup completes, the system must log the lookup result (match/no-match/error), timestamp, and caller ID to the audit trail for compliance.</li>
+            <li class="ac-item"><span class="ac-check">AC-05</span>Given PMS data is returned, the IVA must display the patient's next upcoming appointment (if any) as a contextual prompt during the interaction.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If the ANI returns multiple patient records (e.g., shared household phone), the IVA must prompt for date of birth verification before proceeding — maximum 2 verification attempts before transferring to a live agent.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the ANI lookup times out after 3 seconds, the IVA must gracefully fall through to the new patient identification flow without exposing a system error to the caller.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-03</span>If a patient has opted out of personalized greetings (HIPAA preference flag), the system must default to a generic greeting and suppress name and appointment data.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-04</span>If the PMS returns a "deceased" patient status, the IVA must not proceed with scheduling — transfer to a live agent with a silent flag for sensitivity handling.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Execute ANI lookup with 50 known registered numbers — verify 100% match rate and correct name retrieval across all EHR record types (Epic, Athena, NextGen).</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Simulate lookup latency at 1s, 2s, 2.9s, and 3.1s — confirm fallthrough triggers only at >3s and that greeting is not delivered before record is confirmed.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Test shared household phone scenario with 3 records — confirm DOB prompt appears, incorrect entry is handled gracefully, and 3rd failure routes to agent.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-04</span>Verify audit log entries are written for 100% of lookup attempts — confirm HIPAA opt-out flag suppresses PII in greeting across 10 flagged test accounts.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">EHR/PMS API Integration</span>
+            <span class="tag">ANI Feed Provisioned</span>
+            <span class="tag">HIPAA Flag Schema v2.1</span>
+            <span class="tag">Agent Transfer Queue Config</span>
+            <span class="tag">Audit Log Service</span>
+            <span class="tag">IVA Platform: Intelepeer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- US-102 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-102</div>
+        <div class="story-title">New Patient Identification & Verification Flow</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> new patient or caller without a registered phone number,<br/>
+          <strong>I want</strong> the IVA to guide me through a brief, dignified verification sequence,<br/>
+          <strong>So that</strong> I can access the right services without repeating myself multiple times or being abandoned in a loop.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given ANI lookup returns no match, when the IVA initiates the new-caller flow, then the caller is greeted neutrally (no name assumption) and prompted to confirm if they are a new or existing patient.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given the caller confirms they are an existing patient, when the IVA requests verification, then it collects date of birth and last name only — no more than 2 data fields before routing.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given the caller confirms they are a new patient, when the IVA responds, then it offers exactly two options: schedule a new patient appointment or transfer to the registration team — presented within a single IVA turn.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given successful verification of an existing patient by DOB + last name, when the record is confirmed, then the IVA resumes the same personalized experience as a matched ANI caller (AC-02 through AC-05 in US-101 apply).</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If DOB + last name verification fails on first attempt, the IVA offers one retry with a different prompt phrasing. On second failure, the caller is transferred to a live agent — no third attempt.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the caller does not respond within 5 seconds of a prompt, the IVA re-prompts once, then offers a callback option — the call must not terminate silently.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-03</span>If verification returns multiple matching records (same DOB + last name), escalate to agent immediately with a silent priority flag — do not attempt further disambiguation via IVA.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Test all four entry states: new patient, existing patient verified, existing patient fail (1x), existing patient fail (2x) — confirm correct routing and message phrasing for each.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Validate that the verification flow never exceeds 2 data collection turns before routing — time each scenario and confirm average handle time is under 45 seconds to route.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Test silence/timeout path — confirm re-prompt fires at 5s and callback option appears at second silence event with correct callback confirmation message.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">EHR Verification API</span>
+            <span class="tag">Registration Team Queue</span>
+            <span class="tag">Callback Service Config</span>
+            <span class="tag">Silence Detection (5s threshold)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- US-103 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-103</div>
+        <div class="story-title">Dynamic Intent Classification & Call Routing</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient who has been identified by the system,<br/>
+          <strong>I want</strong> to state the reason for my call in plain language and be routed immediately,<br/>
+          <strong>So that</strong> I reach the right team or complete my task without navigating a lengthy menu tree.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given an identified patient states their intent, when the NLP intent classifier processes the utterance, then it correctly classifies intent into one of 6 defined categories (Schedule, Cancel, Reschedule, Confirm, Billing, Other) with ≥90% accuracy on the production test set.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given a classified intent of Schedule, Cancel, or Reschedule, when routing executes, then the caller reaches the correct queue or self-service path in a single IVA step — no confirmation menus.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given an intent of "Billing" or "Other," when routing executes, then the caller is transferred to the appropriate live queue within 8 seconds with a warm handoff message including the patient's name and intent.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given the IVA cannot classify an intent with >70% confidence, when fallback logic triggers, then the caller is offered a short-form menu of the 3 most common intents — not a full menu replay.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If a caller states multiple intents in one utterance (e.g., "cancel my appointment and also ask about my bill"), the IVA must handle the primary intent first and offer to address the secondary intent after completion.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the caller uses a non-English utterance, the IVA must detect the language and route to a bilingual queue immediately — Spanish (Castilian) and Portuguese to be supported at MVP; other languages route to agent.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-03</span>If a caller utters keywords associated with a medical emergency, the IVA must immediately play an emergency redirect message and transfer to 911 instructions — no scheduling flow is permitted to continue.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Run the NLP classifier against 200-utterance test set (balanced across all 6 intent categories) — confirm ≥90% classification accuracy; document and categorize all misclassifications for model tuning.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Test multi-intent utterances (minimum 15 scenarios) — verify primary intent is handled first and secondary intent offer appears post-completion in all cases.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Test emergency keyword list (minimum 8 trigger phrases) — confirm 100% emergency redirect rate with zero scheduling flow continuations after trigger detection.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-04</span>Test Spanish and Portuguese utterances across all 6 intent categories — confirm bilingual queue routing fires correctly for each.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">NLP Intent Model v3.2</span>
+            <span class="tag">Bilingual Queue Setup</span>
+            <span class="tag">Emergency Keyword Library</span>
+            <span class="tag">Warm Handoff API</span>
+            <span class="tag">Confidence Threshold Config (0.70)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EPIC 2 — APPOINTMENT MANAGEMENT SELF-SERVICE
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="epic-block reveal d1">
+    <div class="epic-header" style="border-left-color:var(--gold)">
+      <div class="epic-id" style="color:var(--gold)">EPIC-02</div>
+      <div class="epic-title">Appointment Management Self-Service</div>
+      <div class="epic-badge" style="background:var(--gold)">Scheduling Core</div>
+    </div>
+
+    <!-- US-201 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-201</div>
+        <div class="story-title">Appointment Scheduling via Live PMS Availability</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient who wants to schedule an appointment,<br/>
+          <strong>I want</strong> the IVA to query real-time availability from the PMS and confirm my appointment in one call,<br/>
+          <strong>So that</strong> I don't need to call back, wait on hold, or receive a callback to complete scheduling.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given a patient requests scheduling, when the IVA queries the PMS, then it presents up to 3 available appointment slots in the patient's preferred provider's schedule — ordered by soonest available.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given the patient selects a time slot, when confirmation executes, then the appointment is written to the PMS in real time and a confirmation number is read back to the caller and sent via SMS within 60 seconds.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given the patient has a stated appointment type preference on file (in-person vs. telehealth), when slots are presented, then the IVA filters availability to match the preference and notes the appointment modality before confirming.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given a successful booking, when the call ends, then the PMS record is updated with the IVA interaction source code for reporting and audit purposes.</li>
+            <li class="ac-item"><span class="ac-check">AC-05</span>Given the caller requests a provider not in network or not currently accepting patients, when the IVA responds, then it offers the next available in-network provider and does not dead-end the interaction.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If no availability exists within 14 days for the patient's preferred provider, the IVA must offer a waitlist enrollment option and confirm enrollment by reading back contact details.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If PMS write fails after slot selection (timeout or API error), the IVA must not confirm the appointment — instead it must inform the caller, attempt one retry, and offer agent transfer on second failure.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-03</span>If the patient has an existing appointment within 24 hours of the requested new slot, the IVA must surface the conflict and ask for confirmation before proceeding.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-04</span>If the patient requires an interpreter (language flag in PMS), the IVA must include the interpreter service code in the booking and notify the scheduling team via internal alert.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Perform 25 end-to-end scheduling test calls — confirm PMS write completes successfully and appointment appears in chart within 60 seconds for all 25.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Test PMS write failure scenario (force timeout) — confirm IVA does not read confirmation number, retry fires once, and agent transfer triggers on second failure.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Test slot conflict detection with 10 accounts that have existing upcoming appointments — confirm conflict prompt appears in 100% of cases before booking proceeds.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-04</span>Confirm SMS confirmation fires within 60 seconds for 100% of completed bookings across iOS and Android test numbers.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">PMS Real-Time Write API</span>
+            <span class="tag">SMS Gateway Config</span>
+            <span class="tag">Waitlist Service</span>
+            <span class="tag">Interpreter Flag Schema</span>
+            <span class="tag">IVA Source Code: IVA-SCHED</span>
+            <span class="tag">Conflict Detection Logic</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- US-202 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-202</div>
+        <div class="story-title">Appointment Cancellation with Reason Capture</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient who needs to cancel an upcoming appointment,<br/>
+          <strong>I want</strong> to cancel quickly via the IVA and have the option to reschedule in the same interaction,<br/>
+          <strong>So that</strong> I don't lose my care continuity and the provider's schedule is updated immediately.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given a patient requests cancellation, when the IVA retrieves their upcoming appointments, then it presents the soonest appointment first with date, time, and provider name — and confirms the correct appointment before proceeding.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given the patient confirms cancellation, when the IVA captures a cancellation reason (from a list of 5 structured options), then the PMS appointment status is updated to "Cancelled – IVA" and the reason code is appended within 30 seconds.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given cancellation is confirmed, when the IVA response concludes, then the caller must be offered reschedule options before the call ends — not as a separate call.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given a cancellation within 24 hours of the appointment, when the IVA confirms, then an internal alert must be sent to the provider's scheduling coordinator for same-day slot backfill opportunity.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If the patient has no upcoming appointments in the PMS, the IVA must confirm this clearly and offer to connect with the scheduling team — not present an empty menu.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the patient has multiple upcoming appointments and selects incorrectly, the IVA must offer one re-confirmation before executing — "Just to confirm, you'd like to cancel your [date/time] appointment with [Dr. X]?"</li>
+            <li class="ac-item edge"><span class="ac-check">EC-03</span>If the appointment type is flagged as "Pre-procedure" or "Post-operative," the IVA must play a clinician advisory message before accepting the cancellation and log the interaction for clinical staff review.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Test cancellation flow for accounts with 1, 2, and 3+ upcoming appointments — confirm correct appointment is cancelled in all cases and PMS status updates within 30 seconds.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Validate all 5 cancellation reason codes are correctly written to PMS across 5 distinct test calls — one per reason.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Test pre-procedure flag: confirm advisory message plays before cancellation is accepted and clinical alert fires for 100% of flagged appointment types.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-04</span>Test same-day cancellation (within 24 hours) for 5 test appointments — confirm scheduling coordinator alert is received within 2 minutes of IVA confirmation.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">PMS Cancel Status API</span>
+            <span class="tag">Cancellation Reason Code Library (5)</span>
+            <span class="tag">Internal Alert Service</span>
+            <span class="tag">Pre-Procedure Flag Schema</span>
+            <span class="tag">Clinical Escalation Queue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- US-203 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-203</div>
+        <div class="story-title">Appointment Confirmation & Reminder Re-Engagement</div>
+        <div class="priority-pill should">Should Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient who received an automated appointment reminder,<br/>
+          <strong>I want</strong> to confirm, cancel, or reschedule my appointment in response to that reminder via IVA,<br/>
+          <strong>So that</strong> my intent is captured in real time and my provider is notified without requiring a manual callback.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given a caller dials in referencing a reminder (via utterance OR callback number match), when the IVA detects the reminder context, then it presents the specific appointment details and asks for confirmation, cancellation, or reschedule — in a single turn.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given a caller confirms the appointment, when the IVA processes the response, then the PMS appointment status is updated to "Patient Confirmed – IVA" and confirmation is re-sent via SMS within 60 seconds.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given a caller confirms, when the call ends, then the IVA offers one add-on prompt: "Would you like us to remind you again 2 hours before?" — and records the preference.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If the appointment was already confirmed via another channel (patient portal, text), the IVA must acknowledge the prior confirmation and not create a duplicate status write to the PMS.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the reminder was for an appointment that has since been cancelled by the practice, the IVA must surface this immediately, apologize for the confusion, and offer to reschedule.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Test inbound re-engagement from 10 reminder callbacks — confirm context detection fires correctly and appointment details presented match PMS for all 10.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Test duplicate confirmation prevention — confirm PMS does not write a second "confirmed" status when appointment already shows confirmed; log deduplication event.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">Reminder System Callback Mapping</span>
+            <span class="tag">PMS Confirmation Status Write</span>
+            <span class="tag">Deduplication Logic</span>
+            <span class="tag">2-Hour Reminder Preference Store</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EPIC 3 — LATENCY REDUCTION & SYSTEM PERFORMANCE
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="epic-block reveal d2">
+    <div class="epic-header">
+      <div class="epic-id">EPIC-03</div>
+      <div class="epic-title">Latency Reduction & System Reliability</div>
+      <div class="epic-badge">Performance</div>
+    </div>
+
+    <!-- US-301 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-301</div>
+        <div class="story-title">IVA Response Latency & Turn Optimization</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient on a call with the IVA,<br/>
+          <strong>I want</strong> the system to respond to my inputs quickly and without noticeable lag,<br/>
+          <strong>So that</strong> the interaction feels natural rather than like I am waiting for a broken phone system.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given a caller finishes speaking, when the IVA processes the utterance, then the audio response begins playing within 1.5 seconds of end-of-speech detection — measured at the 90th percentile across production calls.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given any IVA turn requiring an API call (ANI lookup, PMS query, scheduling write), when the response is delayed beyond 2 seconds, then the IVA plays a brief filler message ("One moment…") — not silence.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given a complete call flow from answer to task completion, when the call ends, then average handle time for scheduling tasks must not exceed 3 minutes 30 seconds as measured in production telemetry.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given the IVA processes barge-in (caller speaks over the IVA), when barge-in is detected, then the IVA response stops immediately and the caller input is re-processed — zero blocking of barge-in.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If API latency exceeds 5 seconds on any call, the system must log the event as a "high latency incident" and trigger an alert to the operations monitoring dashboard — no silent failures.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If a filler message plays more than twice in a single call, the IVA must route to a live agent rather than continue degraded — flagging the call for engineering review.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Conduct latency benchmarking across 100 test calls — confirm P90 response time ≤1.5s; document P95 and P99 for engineering baseline.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Test barge-in in 20 scenarios — confirm 100% barge-in detection and IVA cessation within 200ms of barge-in detection.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Force API latency >5s via test environment — confirm high-latency alert fires in monitoring dashboard within 30 seconds of event.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">Telemetry / Call Monitoring Dashboard</span>
+            <span class="tag">Barge-In Detection Config</span>
+            <span class="tag">Filler Audio Assets</span>
+            <span class="tag">Ops Alert Service</span>
+            <span class="tag">Latency SLA: 1.5s P90</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- US-302 -->
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-id">US-302</div>
+        <div class="story-title">Graceful Failure & Agent Escalation Protocol</div>
+        <div class="priority-pill must">Must Have</div>
+      </div>
+      <div class="story-body">
+        <div class="story-statement">
+          <strong>As a</strong> patient experiencing a system error or unresolvable IVA interaction,<br/>
+          <strong>I want</strong> to be transferred to a live agent smoothly with context already handed off,<br/>
+          <strong>So that</strong> I don't have to re-explain my situation from the beginning.
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Acceptance Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item"><span class="ac-check">AC-01</span>Given any escalation trigger (patient request, max retries, system error, or clinical flag), when the transfer executes, then the receiving agent screen-pops with: patient name, verified identity status, intent classification, steps completed, and reason for escalation.</li>
+            <li class="ac-item"><span class="ac-check">AC-02</span>Given a transfer is initiated, when the caller is in queue, then the IVA plays a hold message (not silence or dead air) with an estimated wait time drawn from live queue data.</li>
+            <li class="ac-item"><span class="ac-check">AC-03</span>Given a caller requests to speak to a live agent at any point in the call flow, when the request is detected (via utterance or keypress), then escalation initiates immediately — no additional IVA turns or re-confirmation required.</li>
+            <li class="ac-item"><span class="ac-check">AC-04</span>Given the queue wait time exceeds 4 minutes, when the IVA detects the threshold, then it offers the caller a callback option — capturing the preferred callback number and confirming enrollment.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Edge Cases</div>
+          <ul class="ac-list">
+            <li class="ac-item edge"><span class="ac-check">EC-01</span>If the agent queue is closed or at maximum capacity, the IVA must not place the caller in an endless hold — offer callback enrollment and end the call gracefully within one additional turn.</li>
+            <li class="ac-item edge"><span class="ac-check">EC-02</span>If the screen pop data fails to transmit (API error), the transfer still proceeds — a flag is written to the call log and the agent is notified of the missing context via a system message in the agent UI.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">QA Validation Criteria</div>
+          <ul class="ac-list">
+            <li class="ac-item qa"><span class="ac-check">QA-01</span>Test 5 distinct escalation triggers — confirm screen pop populates correctly for all 5 in agent UI with no missing required fields.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-02</span>Test "talk to an agent" utterance at 5 different points in the IVA flow — confirm transfer initiates without any additional IVA turns in all 5 scenarios.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-03</span>Simulate queue >4 minutes — confirm callback offer appears and enrollment completes with correct callback number confirmed back to caller.</li>
+            <li class="ac-item qa"><span class="ac-check">QA-04</span>Test screen pop failure — confirm transfer still completes and agent-side system message appears flagging missing context.</li>
+          </ul>
+        </div>
+
+        <div class="card-section">
+          <div class="section-label">Dependencies & Notes</div>
+          <div class="tag-row">
+            <span class="tag">Agent Screen Pop Integration</span>
+            <span class="tag">Live Queue Data Feed</span>
+            <span class="tag">Callback Enrollment Service</span>
+            <span class="tag">Agent UI Alert System</span>
+            <span class="tag">Queue Threshold Config: 4 min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPRINT SUMMARY TABLE -->
+  <div class="summary-section reveal d3">
+    <div class="epic-header" style="border-left-color:var(--gold);margin-bottom:2px;">
+      <div class="epic-id" style="color:var(--gold)">BACKLOG</div>
+      <div class="epic-title">Sprint Summary — Story Point Allocation</div>
+    </div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Story ID</th>
+          <th>Title</th>
+          <th>Epic</th>
+          <th>Priority</th>
+          <th>Sprint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>US-101</td>
+          <td>ANI Lookup & Patient Record Retrieval</td>
+          <td style="color:var(--teal);font-family:var(--font-mono);font-size:11px;">EPIC-01</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 1</td>
+        </tr>
+        <tr>
+          <td>US-102</td>
+          <td>New Patient Identification & Verification Flow</td>
+          <td style="color:var(--teal);font-family:var(--font-mono);font-size:11px;">EPIC-01</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 1</td>
+        </tr>
+        <tr>
+          <td>US-103</td>
+          <td>Dynamic Intent Classification & Call Routing</td>
+          <td style="color:var(--teal);font-family:var(--font-mono);font-size:11px;">EPIC-01</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 1</td>
+        </tr>
+        <tr>
+          <td>US-301</td>
+          <td>IVA Response Latency & Turn Optimization</td>
+          <td style="color:var(--teal);font-family:var(--font-mono);font-size:11px;">EPIC-03</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 1</td>
+        </tr>
+        <tr>
+          <td>US-302</td>
+          <td>Graceful Failure & Agent Escalation Protocol</td>
+          <td style="color:var(--teal);font-family:var(--font-mono);font-size:11px;">EPIC-03</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 1</td>
+        </tr>
+        <tr>
+          <td>US-201</td>
+          <td>Appointment Scheduling via Live PMS Availability</td>
+          <td style="color:var(--gold);font-family:var(--font-mono);font-size:11px;">EPIC-02</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 2</td>
+        </tr>
+        <tr>
+          <td>US-202</td>
+          <td>Appointment Cancellation with Reason Capture</td>
+          <td style="color:var(--gold);font-family:var(--font-mono);font-size:11px;">EPIC-02</td>
+          <td><span class="priority-pill must" style="font-size:9px;">Must Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 2</td>
+        </tr>
+        <tr>
+          <td>US-203</td>
+          <td>Appointment Confirmation & Reminder Re-Engagement</td>
+          <td style="color:var(--gold);font-family:var(--font-mono);font-size:11px;">EPIC-02</td>
+          <td><span class="priority-pill should" style="font-size:9px;">Should Have</span></td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Sprint 3</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals-bar">
+      <div class="total-item">
+        <div class="total-num">8</div>
+        <div class="total-label">User Stories</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num">3</div>
+        <div class="total-label">Epics</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num gold">3</div>
+        <div class="total-label">Sprints</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num">5</div>
+        <div class="total-label">Sprint 1 Stories</div>
+      </div>
+      <div class="total-item" style="margin-left:auto;">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);max-width:260px;line-height:1.7;">
+          AC, Edge Case, and QA criteria written<br/>
+          for direct engineering handoff.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <div class="footer-brand">Simone<span>.</span>Wilson</div>
+  <div class="footer-meta">AI Product Manager · Houston, TX · Portfolio Artifact — Sanitized for Confidentiality</div>
+  <a class="footer-contact" href="/cdn-cgi/l/email-protection#72011b1f1d1c1705001b061701464232151f131b1e5c111d1f"><span class="__cf_email__" data-cfemail="196a707476777c6e6b706d7c6a2d29597e74787075377a7674">[email&#160;protected]</span></a>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08, rootMargin:'0px 0px -30px 0px' });
+  document.querySelectorAll('

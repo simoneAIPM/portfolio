@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denticon (PlanetDDS) — Level 3 DFD (Appointment Management)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2234;
+    --border: #1f2d42;
+    --border-bright: #2a3f5a;
+
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+    --purple-border: rgba(167,139,250,0.22);
+
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.08);
+    --blue-border: rgba(96,165,250,0.22);
+
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.08);
+    --orange-border: rgba(251,146,60,0.22);
+
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.08);
+    --red-border: rgba(248,113,113,0.22);
+
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.08);
+    --green-border: rgba(74,222,128,0.22);
+
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.08);
+    --teal-border: rgba(45,212,191,0.22);
+
+    --cyan: #67e8f9;
+    --cyan-dim: rgba(103,232,249,0.06);
+    --cyan-border: rgba(103,232,249,0.2);
+
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 36px 20px 80px;
+  }
+
+  .page-header {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-bright);
+  }
+
+  .header-left .overline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .header-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    background: var(--cyan-dim);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    color: var(--cyan);
+    white-space: nowrap;
+  }
+
+  .dfd-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── SCOPE NOTE ── */
+  .scope-note {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-left: 4px solid var(--cyan);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+  }
+
+  .scope-note-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .scope-note-body {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── WARNING / DESIGN CONSTRAINTS NOTE ── */
+  .warning-note {
+    background: var(--orange-dim);
+    border: 1px solid var(--orange-border);
+    border-left: 4px solid var(--orange);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 30px;
+  }
+
+  .warning-note-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .warning-note-body {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 30px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .legend-shape {
+    width: 32px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .legend-entity {
+    width: 32px;
+    height: 24px;
+    background: var(--purple-dim);
+    border: 2px solid var(--purple);
+  }
+
+  .legend-process {
+    width: 32px;
+    height: 32px;
+    background: var(--blue-dim);
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+  }
+
+  .legend-datastore {
+    width: 40px;
+    height: 20px;
+    background: var(--green-dim);
+    border-top: 2px solid var(--green);
+    border-bottom: 2px solid var(--green);
+  }
+
+  .legend-flow {
+    width: 40px;
+    height: 2px;
+    background: var(--text-muted);
+    position: relative;
+  }
+  .legend-flow::after {
+    content: '\25B6';
+    position: absolute;
+    right: -4px;
+    top: -7px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .legend-label { color: var(--text-muted); }
+
+  /* ── SECTION TITLES (color variants) ── */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .process-section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .process-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .datastore-section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .datastore-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .dataflow-section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dataflow-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .workflow-section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .workflow-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .workflow-sub-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 32px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .workflow-sub-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── EXTERNAL ENTITIES ── */
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .external-entity {
+    background: var(--purple-dim);
+    border: 2px solid var(--purple);
+    padding: 16px;
+  }
+
+  .entity-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6px;
+  }
+
+  .entity-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .entity-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── PROCESS GROUPS ── */
+  .process-group {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .process-group-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .process-group-num {
+    width: 40px;
+    height: 40px;
+    background: var(--blue-dim);
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .process-group-info { flex: 1; }
+
+  .process-group-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .process-group-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .process-group-rw {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .rw-read { background: rgba(74,222,128,0.15); color: var(--green); }
+  .rw-write { background: rgba(96,165,250,0.15); color: var(--blue); }
+
+  /* ── ENDPOINT CARDS ── */
+  .endpoint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  .endpoint-card {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .endpoint-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .endpoint-method {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .method-get    { background: rgba(74,222,128,0.15);  color: var(--green);  }
+  .method-post   { background: rgba(96,165,250,0.15);  color: var(--blue);   }
+  .method-put    { background: rgba(251,146,60,0.15);  color: var(--orange); }
+  .method-patch  { background: rgba(251,146,60,0.15);  color: var(--orange); }
+  .method-delete { background: rgba(248,113,113,0.15); color: var(--red);    }
+
+  .endpoint-path {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .endpoint-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .endpoint-desc {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .endpoint-fields-section { margin-bottom: 8px; }
+  .endpoint-fields-section:last-child { margin-bottom: 0; }
+
+  .fields-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .fields-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .field-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    background: var(--bg);
+    border: 1px solid var(--border-bright);
+    border-radius: 3px;
+    color: var(--text-muted);
+  }
+
+  .field-tag.required {
+    border-color: var(--green-border);
+    color: var(--green);
+  }
+
+  .endpoint-note {
+    font-size: 10px;
+    color: var(--orange);
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  /* ── DATA STORES ── */
+  .datastore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .datastore {
+    background: var(--green-dim);
+    border-top: 3px solid var(--green);
+    border-bottom: 3px solid var(--green);
+    padding: 14px 16px;
+  }
+
+  .datastore-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .datastore-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    background: rgba(74,222,128,0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .datastore-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .datastore-api {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .datastore-desc {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .datastore-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ds-field {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 3px;
+    color: var(--text-muted);
+  }
+
+  /* ── DATA FLOWS TABLE ── */
+  .dataflow-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    background: var(--surface);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .dataflow-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    padding: 12px 14px;
+    text-align: left;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dataflow-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(31,45,66,0.6);
+    vertical-align: top;
+  }
+
+  .dataflow-table tr:last-child td { border-bottom: none; }
+
+  .df-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--orange);
+  }
+
+  .df-source, .df-dest {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text);
+  }
+
+  .df-data {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--cyan);
+  }
+
+  .df-desc {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ── WORKFLOW STEPS ── */
+  .workflow-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .workflow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .step-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 36px;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--teal);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .step-num-orange {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--orange);
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .step-line {
+    width: 2px;
+    min-height: 24px;
+    flex: 1;
+    background: var(--teal-border);
+  }
+
+  .step-line-orange {
+    width: 2px;
+    min-height: 24px;
+    flex: 1;
+    background: var(--orange-border);
+  }
+
+  .step-card {
+    flex: 1;
+    padding: 16px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--teal-border);
+    background: var(--teal-dim);
+    margin-bottom: 6px;
+  }
+
+  .step-card-orange {
+    flex: 1;
+    padding: 16px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--orange-border);
+    background: var(--orange-dim);
+    margin-bottom: 6px;
+  }
+
+  .step-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .step-api {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(45,212,191,0.15);
+    color: var(--teal);
+  }
+
+  .step-api-orange {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(251,146,60,0.15);
+    color: var(--orange);
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .step-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .entity-grid { grid-template-columns: 1fr; }
+    .endpoint-grid { grid-template-columns: 1fr; }
+    .datastore-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="overline">Data Flow Diagram · Level 3 · Appointment Management</div>
+    <h1>Denticon (PlanetDDS) — DFD Level 3</h1>
+    <p>Appointment Management — Scheduling, Confirmation, Cancellation &amp; Status Lifecycle</p>
+  </div>
+  <div class="header-badge">Source: Denticon API Reference Guide v1.0 · March 2026</div>
+</div>
+
+<div class="dfd-container">
+
+  <!-- SCOPE NOTE -->
+  <div class="scope-note">
+    <div class="scope-note-title">Scope Definition</div>
+    <div class="scope-note-body">
+      <strong>Included:</strong> All Denticon appointment management API endpoints documented in the Denticon API Reference Guide (March 2026): patient identity resolution, schedule availability lookup, appointment booking (POST Add Appointment), appointment status updates (PUT), cancellation, appointment notes updates, reminder flag updates, recall data retrieval, and supporting Setup API calls (Providers, Operatories, Appointment Types, Office Info). Both Legacy API (Auth Key) and New API (Bearer Token / Azure APIM) endpoint coverage is represented where documented.<br><br>
+      <strong>Excluded:</strong> No middleware, event bus, or internal Denticon database schema is assumed. No UI or front-end components. Ledger/financial, insurance, and clinical flows are out of scope except where an appointment directly references a financial identifier (APID on ledger entries). Batch export and Webhook configuration are noted as supplementary but are not part of the real-time scheduling flow modeled here. No async processing or queueing infrastructure is inferred beyond what is documented. Rate limits are <em>not published</em> by Planet DDS — confirm with Planet DDS prior to implementation.<br><br>
+      <strong>Authentication:</strong> Legacy endpoints use <code>AuthKey</code> header per PGID/OID; New API (2024+) uses <code>Authorization: Bearer {token}</code> via Azure APIM. Every request must include PGID and OID scope parameters.
+    </div>
+  </div>
+
+  <!-- DESIGN CONSTRAINTS -->
+  <div class="warning-note">
+    <div class="warning-note-title">Key Design Constraints (from Denticon API Reference Guide)</div>
+    <div class="warning-note-body">
+      <strong>No atomic reschedule:</strong> Denticon has no reschedule endpoint. Rescheduling requires two steps — PUT APS=Cancelled on the existing APID, then POST a new appointment. Always secure the new slot BEFORE cancelling the old one. &nbsp;|&nbsp;
+      <strong>Slot availability required before booking:</strong> Always call GET Schedule Availability before POST Add Appointment. The API will reject bookings into occupied or invalid slots. &nbsp;|&nbsp;
+      <strong>TemporaryPatientId ≠ full PID:</strong> AddPatientInformation returns a TemporaryPatientId — the office must finalize the record in Denticon admin before it becomes a full active patient. &nbsp;|&nbsp;
+      <strong>PGID + OID required on every call:</strong> Both identifiers are mandatory on virtually all endpoints. &nbsp;|&nbsp;
+      <strong>Rate limits:</strong> Not published by Planet DDS — confirm with Planet DDS partner team. &nbsp;|&nbsp;
+      <strong>Date format:</strong> MM/DD/YYYY for dates; MM/DD/YYYYTHH:MM:SS for datetime fields throughout the API. &nbsp;|&nbsp;
+      <strong>New API access:</strong> Write access (scheduling, status updates) may require a higher-tier partner program enrollment via developer.planetdds.com. Confirm write permissions before building.
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-shape legend-entity"></div>
+      <span class="legend-label">External Entity</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape legend-process"></div>
+      <span class="legend-label">Process (API Endpoint)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape legend-datastore"></div>
+      <span class="legend-label">Data Store (Domain Object)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape legend-flow"></div>
+      <span class="legend-label">Data Flow</span>
+    </div>
+  </div>
+
+  <!-- EXTERNAL ENTITIES -->
+  <div class="section-title">External Entities</div>
+  <div class="entity-grid">
+
+    <div class="external-entity">
+      <div class="entity-label">E1</div>
+      <div class="entity-name">Voice Agent / IVA</div>
+      <div class="entity-desc">Primary initiator of appointment management API calls. Performs patient lookup, slot search, booking, confirmation, cancellation, and status updates on behalf of the patient via the Denticon API. Operates within a PGID/OID scope established at session initialization.</div>
+    </div>
+
+    <div class="external-entity">
+      <div class="entity-label">E2</div>
+      <div class="entity-name">Patient / Caller</div>
+      <div class="entity-desc">Human caller interacting with the Voice Agent. Provides identity credentials (name, DOB, phone) for lookup. Requests scheduling, confirmation, or cancellation actions. Does not interact with the Denticon API directly — all API calls are proxied through the Voice Agent.</div>
+    </div>
+
+    <div class="external-entity">
+      <div class="entity-label">E3</div>
+      <div class="entity-name">Dental Office / Front Desk Staff</div>
+      <div class="entity-desc">Practice staff who manage provider schedules, configure appointment types, and finalize TemporaryPatientId records in Denticon admin. Receive appointment booking notifications from Denticon's configured reminder system. Set APS values for in-office transitions (Arrived, In Chair, Complete).</div>
+    </div>
+
+    <div class="external-entity">
+      <div class="entity-label">E4</div>
+      <div class="entity-name">Denticon Admin Portal</div>
+      <div class="entity-desc">Practice management UI where Auth Keys are generated (Utilities &gt; API Key Management), webhook endpoints are configured, and TemporaryPatientId records are reviewed and finalized. Not directly part of the real-time API flow but required for setup and patient record finalization.</div>
+    </div>
+
+    <div class="external-entity">
+      <div class="entity-label">E5</div>
+      <div class="entity-name">Denticon Webhook Receiver</div>
+      <div class="entity-desc">Voice Agent's HTTPS endpoint registered with Denticon to receive push event notifications. Receives <code>appointment.created</code>, <code>appointment.updated</code>, <code>appointment.status_changed</code>, <code>appointment.cancelled</code>, and <code>appointment.completed</code> events. Must implement idempotent processing — Denticon retries failed deliveries.</div>
+    </div>
+
+  </div>
+
+  <!-- PROCESS GROUPS -->
+  <div class="process-section-title">Denticon API Processes (Appointment Management Endpoints)</div>
+
+  <!-- 1.0 Authentication & Session Init -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">1.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Authentication &amp; Session Initialization</div>
+        <div class="process-group-subtitle">Credential establishment, Auth Key / Bearer Token provisioning, and Setup API caching at session start</div>
+      </div>
+      <span class="process-group-rw rw-read">READ</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">Legacy: AuthKey header / New: Bearer Token</span>
+        </div>
+        <div class="endpoint-name">API Authentication</div>
+        <div class="endpoint-desc">Legacy API: pass <code>AuthKey: {api-key}</code> header on every request. New API (2024+): pass <code>Authorization: Bearer {token}</code> obtained via OAuth client credentials grant through Azure APIM. Auth Key is issued per PGID/OID in Denticon admin under Utilities &gt; API Key Management.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Headers</div>
+          <div class="fields-list">
+            <span class="field-tag required">AuthKey (Legacy)</span>
+            <span class="field-tag required">Authorization: Bearer (New API)</span>
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response Envelope (all endpoints)</div>
+          <div class="fields-list">
+            <span class="field-tag">Successful</span>
+            <span class="field-tag">Data</span>
+            <span class="field-tag">TotalRecords</span>
+            <span class="field-tag">Message</span>
+            <span class="field-tag">Exception</span>
+            <span class="field-tag">ResponseCode</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/providers</span>
+        </div>
+        <div class="endpoint-name">Get Providers (Setup API)</div>
+        <div class="endpoint-desc">All providers in the practice group. Returns PDR (Provider ID / SID), provider name, specialty, operatory assignments, and active status. Cache at session initialization — required for schedule availability queries.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">PDR (SID)</span>
+            <span class="field-tag">provider name</span>
+            <span class="field-tag">specialty</span>
+            <span class="field-tag">operatory assignments</span>
+            <span class="field-tag">active status</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Cache at session init. Refresh every 4-8 hours. Do not call per-appointment.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/operatories</span>
+        </div>
+        <div class="endpoint-name">Get Operatories (Setup API)</div>
+        <div class="endpoint-desc">All operatories (treatment rooms) for a given PGID/OID. Returns OPID (Operatory ID) and DES (operatory name/description). Cache at session initialization — required for slot search and appointment booking.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">DES</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Cache at session init. Required as input for GET Schedule Availability and POST Add Appointment.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/appointment-types</span>
+        </div>
+        <div class="endpoint-name">Get Appointment Types (Setup API)</div>
+        <div class="endpoint-desc">Appointment type definitions for the practice. Returns PRTY (priority code), PRC (color), DES (description), ISAPN (allow patient notes), ISACT (active), APNDUR (duration in minutes). APNDUR is critical — ensures booked appointment duration matches the appointment type.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">ATY (type code)</span>
+            <span class="field-tag">DES</span>
+            <span class="field-tag">APNDUR</span>
+            <span class="field-tag">PRTY</span>
+            <span class="field-tag">ISACT</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Cache at session init. APNDUR must match APL value in POST Add Appointment.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/office-info</span>
+        </div>
+        <div class="endpoint-name">Get Office Information (Setup API)</div>
+        <div class="endpoint-desc">Office location details. Returns O (OID), OFN (office name), SID, address, phone, fax, email, TZ (timezone), WS (website), AC (active flag). Required for patient confirmation read-back and correct timezone handling for appointment scheduling.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">OFN</span>
+            <span class="field-tag">address</span>
+            <span class="field-tag">phone</span>
+            <span class="field-tag">TZ</span>
+            <span class="field-tag">WS</span>
+            <span class="field-tag">AC</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Cache at session init. TZ field is required for correct appointment datetime presentation to patient.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/holidays</span>
+        </div>
+        <div class="endpoint-name">Get Practice Holidays (Setup API)</div>
+        <div class="endpoint-desc">Holiday dates and descriptions for the practice. Use to filter out holiday dates from available slot suggestions presented to the patient.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">holiday date</span>
+            <span class="field-tag">description</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2.0 Patient Identity Resolution -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">2.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Patient Identity Resolution</div>
+        <div class="process-group-subtitle">Search, verify, and retrieve patient records before any scheduling action</div>
+      </div>
+      <span class="process-group-rw rw-read">READ</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-post">POST</span>
+          <span class="endpoint-path">/registration/check-existing-patient</span>
+        </div>
+        <div class="endpoint-name">Check Existing Patient</div>
+        <div class="endpoint-desc">Search for an existing patient before creating a new record. Returns IsExistingPatient (true/false) with PatientId, LastName, FirstName, and BirthDate if found. ALWAYS run before any scheduling action to obtain PID.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">FirstName</span>
+            <span class="field-tag required">LastName</span>
+            <span class="field-tag required">BirthDate</span>
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional</div>
+          <div class="fields-list">
+            <span class="field-tag">phone (HP/WP/CP)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">IsExistingPatient</span>
+            <span class="field-tag">PatientId (PID)</span>
+            <span class="field-tag">LastName</span>
+            <span class="field-tag">FirstName</span>
+            <span class="field-tag">BirthDate</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Run FIRST on every inbound call. Denticon duplicate patients are very difficult to merge.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/patients/v2/{PGID}/{OID}/{PID}</span>
+        </div>
+        <div class="endpoint-name">Get Patient by PID (V2)</div>
+        <div class="endpoint-desc">Full patient record after PID is confirmed. Includes BLC (total balance), OVR30/60/90/120, CURRBLC, insurance array, PTY (patient type), MEDA (medical alerts), AC (active status), ISAS (SMS consent), ISAE (email consent), FV/LV (first/last visit dates).</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">PID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response (key fields)</div>
+          <div class="fields-list">
+            <span class="field-tag">PID</span>
+            <span class="field-tag">RID</span>
+            <span class="field-tag">FN / LN</span>
+            <span class="field-tag">BD</span>
+            <span class="field-tag">HP / CP</span>
+            <span class="field-tag">EM</span>
+            <span class="field-tag">AC</span>
+            <span class="field-tag">PTY</span>
+            <span class="field-tag">MEDA</span>
+            <span class="field-tag">ISAS</span>
+            <span class="field-tag">ISAE</span>
+            <span class="field-tag">ISCD</span>
+            <span class="field-tag">FV / LV</span>
+            <span class="field-tag">Insurance[]</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Check AC=true before scheduling. Review MEDA for contraindications on sensitive procedures.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/patients/v2/{PGID}/{OID}/recall</span>
+        </div>
+        <div class="endpoint-name">Get Patient Recall Data</div>
+        <div class="endpoint-desc">Recall records for patients — procedure codes due, recall interval (RCINT months), recall date (RDT), and scheduled date (SCHDT). Use during recall outreach calls to verify recall is actually due before offering a booking.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional</div>
+          <div class="fields-list">
+            <span class="field-tag">PID (filter to patient)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">PID</span>
+            <span class="field-tag">RCINT</span>
+            <span class="field-tag">RDT</span>
+            <span class="field-tag">SCHDT</span>
+            <span class="field-tag">procedure code</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3.0 Schedule Availability -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">3.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Schedule Availability &amp; Slot Search</div>
+        <div class="process-group-subtitle">Retrieve open appointment slots and provider availability before offering times to patient</div>
+      </div>
+      <span class="process-group-rw rw-read">READ</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/availability</span>
+        </div>
+        <div class="endpoint-name">Get Schedule Availability</div>
+        <div class="endpoint-desc">Open appointment slots by provider and date range. Returns available start times, durations, and operatory assignments. CORE scheduling call — must be called before every booking attempt. Slot availability is not held — slots may be booked by another channel between the search and the booking call.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">SID (PDR)</span>
+            <span class="field-tag required">date range (start / end)</span>
+            <span class="field-tag required">ATY (appointment type)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional</div>
+          <div class="fields-list">
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">APNDUR (duration override)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">available start times</span>
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">SID</span>
+            <span class="field-tag">duration (APL)</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Slot availability is NOT held. Another channel may book the same slot between search and booking. Keep slot list fresh.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/provider-blocked-times</span>
+        </div>
+        <div class="endpoint-name">Get Provider Blocked Times</div>
+        <div class="endpoint-desc">Provider out-of-office or blocked schedule times. Fields: DH (date), TY (type: Out of Office, Holiday, etc.), DS/DE (start/end times), LUS/LUE (lunch start/end). Verify provider availability before slot search to avoid offering blocked periods.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">SID</span>
+            <span class="field-tag required">date range</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">DH</span>
+            <span class="field-tag">TY</span>
+            <span class="field-tag">DS / DE</span>
+            <span class="field-tag">LUS / LUE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/setup/appointment-slots</span>
+        </div>
+        <div class="endpoint-name">Get Appointment Slots (Schedule Template)</div>
+        <div class="endpoint-desc">Slot template data defining when appointments can be booked by operatory. Returns OPID, EFD (effective date), STS (start time), DU (duration), PRTY (priority). Use alongside Schedule Availability for comprehensive slot validation.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">EFD</span>
+            <span class="field-tag">STS</span>
+            <span class="field-tag">DU</span>
+            <span class="field-tag">PRTY</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4.0 Appointment Read Operations -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">4.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Appointment Read Operations</div>
+        <div class="process-group-subtitle">Retrieve appointments by office date, patient, APID, status, or modification time range</div>
+      </div>
+      <span class="process-group-rw rw-read">READ</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}?date={MM/DD/YYYY}</span>
+        </div>
+        <div class="endpoint-name">Get Appointments by Date / Office</div>
+        <div class="endpoint-desc">All appointments for an office on a specific date. Returns full appointment objects including patient contact info, APID, APS (status), provider (SID), operatory (OPID), procedure codes (CDT), and appointment notes (APN).</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">date (MM/DD/YYYY)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID</span>
+            <span class="field-tag">PID</span>
+            <span class="field-tag">APS</span>
+            <span class="field-tag">APD</span>
+            <span class="field-tag">APL</span>
+            <span class="field-tag">SID</span>
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">ATY</span>
+            <span class="field-tag">CDT codes</span>
+            <span class="field-tag">APN</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{PID}</span>
+        </div>
+        <div class="endpoint-name">Get Appointments by Patient</div>
+        <div class="endpoint-desc">All appointments (past and future) for a specific patient. Paginated. Returns full appointment records. Use to check for existing appointments before offering new slots — avoids double-booking.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">PID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional</div>
+          <div class="fields-list">
+            <span class="field-tag">date range (start / end)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID</span>
+            <span class="field-tag">APS</span>
+            <span class="field-tag">APD</span>
+            <span class="field-tag">SID</span>
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">ATY</span>
+            <span class="field-tag">TotalRecords</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}</span>
+        </div>
+        <div class="endpoint-name">Get Appointment by APID</div>
+        <div class="endpoint-desc">Single appointment detail by appointment ID. Full record including procedures (CDT codes), notes (APN), fee, and current status (APS). Use after booking or during confirmation read-back to the patient.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID</span>
+            <span class="field-tag">PID</span>
+            <span class="field-tag">APS</span>
+            <span class="field-tag">APD</span>
+            <span class="field-tag">APL</span>
+            <span class="field-tag">SID</span>
+            <span class="field-tag">OPID</span>
+            <span class="field-tag">ATY</span>
+            <span class="field-tag">CDT codes</span>
+            <span class="field-tag">fee</span>
+            <span class="field-tag">APN</span>
+            <span class="field-tag">ISNP</span>
+            <span class="field-tag">ISASAP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/status</span>
+        </div>
+        <div class="endpoint-name">Get Appointment Status</div>
+        <div class="endpoint-desc">Lightweight status check returning APS (status), APD (date/time), and OID for a specific APID. Use for quick status verification without pulling the full appointment record.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APS</span>
+            <span class="field-tag">APD</span>
+            <span class="field-tag">OID</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/v2/{PGID}/{OID}/modified</span>
+        </div>
+        <div class="endpoint-name">Get Appointments Modified (V2)</div>
+        <div class="endpoint-desc">Appointments modified between a specified time range. Returns RS: 'Modified' flag. Used for incremental schedule sync — detect cancellations, rescheduling, or status changes since the last poll. Preferred over full-pull for ongoing sync.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">start datetime (MM/DD/YYYYTHH:MM:SS)</span>
+            <span class="field-tag required">end datetime (MM/DD/YYYYTHH:MM:SS)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID</span>
+            <span class="field-tag">RS (Modified)</span>
+            <span class="field-tag">APS</span>
+            <span class="field-tag">APD</span>
+            <span class="field-tag">MBO (modified on)</span>
+            <span class="field-tag">MBY</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5.0 Appointment Write Operations -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">5.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Appointment Write &amp; Update Operations</div>
+        <div class="process-group-subtitle">Book, confirm, cancel, update notes, update procedure codes, and manage reminder flags</div>
+      </div>
+      <span class="process-group-rw rw-write">READ + WRITE</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-post">POST</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/add</span>
+        </div>
+        <div class="endpoint-name">Book Appointment (Add Appointment)</div>
+        <div class="endpoint-desc">Create a new appointment in a specific available slot. Returns the APID of the newly created appointment. Triggers Denticon's reminder system if configured. APS defaults to 'Valid' on creation.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">PID</span>
+            <span class="field-tag required">SID (provider)</span>
+            <span class="field-tag required">OPID (operatory)</span>
+            <span class="field-tag required">APD (datetime MM/DD/YYYYTHH:MM:SS)</span>
+            <span class="field-tag required">APL (duration minutes)</span>
+            <span class="field-tag required">ATY (appointment type)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional</div>
+          <div class="fields-list">
+            <span class="field-tag">APN (notes)</span>
+            <span class="field-tag">CDT codes</span>
+            <span class="field-tag">ISNP (new patient flag)</span>
+            <span class="field-tag">ISASAP (waitlist flag)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID (new appointment ID)</span>
+            <span class="field-tag">APS (= Valid)</span>
+            <span class="field-tag">Successful</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Always call GET Schedule Availability immediately before this call. Never attempt to book without confirming slot is open — API will reject a booking into an occupied slot.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-put">PUT</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/status</span>
+        </div>
+        <div class="endpoint-name">Update Appointment Status (Confirm / Cancel)</div>
+        <div class="endpoint-desc">Update APS to any valid status value. Most common voice agent transitions: Valid → Confirmed (after verbal confirmation), Valid/Confirmed → Cancelled (per patient request). APS values: Valid, Confirmed, Arrived, In Chair, Complete, Cancelled, No Show, Missed, ASAP.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+            <span class="field-tag required">APS (new status value)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Optional (for Cancellation)</div>
+          <div class="fields-list">
+            <span class="field-tag">cancellation reason</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">Successful</span>
+            <span class="field-tag">APID</span>
+            <span class="field-tag">APS (updated)</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; To cancel: pass APS='Cancelled' + cancellation reason. Frees the slot immediately. Offer to reschedule BEFORE cancelling.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-put">PUT</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/notes</span>
+        </div>
+        <div class="endpoint-name">Update Appointment Notes</div>
+        <div class="endpoint-desc">Update or add notes to an appointment. APN field. Use to document reason for visit, patient-stated preferences, or voice agent interaction details captured during the call.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+            <span class="field-tag required">APN (note text)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">Successful</span>
+            <span class="field-tag">APID</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-put">PUT</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/procedures</span>
+        </div>
+        <div class="endpoint-name">Update Appointment Procedure Codes</div>
+        <div class="endpoint-desc">Update procedure codes (CDT/ADA codes) on an existing appointment. Affects fee calculation. Primarily a clinical staff operation — voice agent reference only.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+            <span class="field-tag required">CDT codes array</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">Successful</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9432; Clinical staff use — voice agent reads procedure codes from appointment but typically does not update them.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-put">PUT</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/reminder-status</span>
+        </div>
+        <div class="endpoint-name">Update Appointment Reminder Flags</div>
+        <div class="endpoint-desc">Update reminder-sent flags on an appointment. ISC (confirmed), ISM (messaged), ISP (portal notified), ISN (notified). Mark reminder sent after the IVA sends a confirmation message.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+            <span class="field-tag required">reminder flag(s)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Reminder Flags</div>
+          <div class="fields-list">
+            <span class="field-tag">ISC (confirmed)</span>
+            <span class="field-tag">ISM (messaged)</span>
+            <span class="field-tag">ISP (portal notified)</span>
+            <span class="field-tag">ISN (notified)</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">Successful</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 6.0 Reschedule (Two-Step) -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">6.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Reschedule — Two-Step Operation</div>
+        <div class="process-group-subtitle">No atomic reschedule exists in Denticon — cancel existing APID then book new slot</div>
+      </div>
+      <span class="process-group-rw rw-write">READ + WRITE</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-get">GET</span>
+          <span class="endpoint-path">/appointments/availability</span>
+        </div>
+        <div class="endpoint-name">Step 1: Find New Available Slot</div>
+        <div class="endpoint-desc">Before cancelling the existing appointment, identify and confirm a new available slot. Offer 2-3 specific new times to the patient. Secure patient agreement on the new slot FIRST. If no new slot is available or acceptable, offer the ASAP waitlist instead of proceeding with cancellation.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Parameters</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">SID</span>
+            <span class="field-tag required">date range</span>
+            <span class="field-tag required">ATY</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Secure new slot agreement BEFORE cancelling. Slots are not held — proceed immediately to Steps 2 and 3 after patient agrees.</div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-put">PUT</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/{APID}/status</span>
+        </div>
+        <div class="endpoint-name">Step 2: Cancel Existing Appointment</div>
+        <div class="endpoint-desc">Set the existing appointment APS = 'Cancelled'. Include cancellation reason. The slot is freed immediately after this call. Proceed immediately to Step 3 — do not delay between cancel and rebook.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID (existing)</span>
+            <span class="field-tag required">APS = 'Cancelled'</span>
+            <span class="field-tag required">cancellation reason</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-post">POST</span>
+          <span class="endpoint-path">/appointments/{PGID}/{OID}/add</span>
+        </div>
+        <div class="endpoint-name">Step 3: Book New Appointment</div>
+        <div class="endpoint-desc">Book the new appointment into the agreed slot immediately after cancellation. Returns new APID. Set APS = 'Confirmed' in a follow-up PUT call. Read back the new appointment details (date, time, provider, office address) to the patient for confirmation.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Required Fields</div>
+          <div class="fields-list">
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">PID</span>
+            <span class="field-tag required">SID</span>
+            <span class="field-tag required">OPID</span>
+            <span class="field-tag required">APD (new datetime)</span>
+            <span class="field-tag required">APL</span>
+            <span class="field-tag required">ATY</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Response</div>
+          <div class="fields-list">
+            <span class="field-tag">APID (new)</span>
+            <span class="field-tag">APS (= Valid)</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Slot availability not guaranteed between cancel and rebook. If book fails, inform patient and re-search immediately.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7.0 Webhooks -->
+  <div class="process-group">
+    <div class="process-group-header">
+      <div class="process-group-num">7.0</div>
+      <div class="process-group-info">
+        <div class="process-group-title">Webhooks — Appointment Event Notifications</div>
+        <div class="process-group-subtitle">Push-based real-time event notifications for appointment changes — eliminates polling for production deployments</div>
+      </div>
+      <span class="process-group-rw rw-read">READ (Event-Driven)</span>
+    </div>
+    <div class="endpoint-grid">
+
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="endpoint-method method-post">POST</span>
+          <span class="endpoint-path">Denticon → {your-webhook-endpoint}</span>
+        </div>
+        <div class="endpoint-name">Appointment Webhook Events (Inbound)</div>
+        <div class="endpoint-desc">Denticon sends HTTP POST to your registered HTTPS endpoint when appointment events occur. Events: <code>appointment.created</code>, <code>appointment.updated</code>, <code>appointment.status_changed</code>, <code>appointment.cancelled</code>, <code>appointment.completed</code>. Payload contains event type, timestamp, PGID, OID, and APID. Fetch full appointment via GET by APID after receiving event.</div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Webhook Payload</div>
+          <div class="fields-list">
+            <span class="field-tag required">event type</span>
+            <span class="field-tag required">timestamp</span>
+            <span class="field-tag required">PGID</span>
+            <span class="field-tag required">OID</span>
+            <span class="field-tag required">APID</span>
+          </div>
+        </div>
+        <div class="endpoint-fields-section">
+          <div class="fields-label">Webhook Configuration (via Admin Portal)</div>
+          <div class="fields-list">
+            <span class="field-tag">endpoint URL (HTTPS)</span>
+            <span class="field-tag">shared secret / signature</span>
+            <span class="field-tag">event categories</span>
+            <span class="field-tag">PGID/OID scope</span>
+          </div>
+        </div>
+        <div class="endpoint-note">&#9888; Implement idempotent event handling — Denticon retries failed webhook deliveries. Use the Denticon event ID as deduplication key. Validate shared secret on every received event.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DATA STORES -->
+  <div class="datastore-section-title">Denticon Data Stores (Domain Objects)</div>
+  <div class="datastore-grid">
+
+    <div class="datastore">
+      <div class="datastore-header">
+        <span class="datastore-id">D1</span>
+        <span class="datastore-name">Appointment Record</span>
+      </div>
+      <div class="datastore-api">Accessed via: GET /appointments/{PGID}/{OID}, GET /appointments/{PGID}/{OID}/{PID}, GET /appointments/{PGID}/{OID}/{APID}, POST /add, PUT /status, PUT /notes, PUT /procedures, PUT /reminder-status</div>
+      <div class="datastore-desc">Core appointment record keyed by APID (Appointment ID). Unique within PGID/OID scope. Lifecycle controlled by APS field. Linked to a patient (PID), provider (SID), and operatory (OPID). Created by POST Add Appointment; mutated by PUT status/notes/procedures/reminder-status. Freed (slot available) when APS = 'Cancelled'.</div>
+      <div class="datastore-fields">
+        <span class="ds-field">APID</span>
+        <span class="ds-field">PGID</span>
+        <span class="ds-field">OID</span>
+        <span class="ds-field">PID</span>
+        <span class="ds-field">SID (provider)</span>
+        <span class="ds-field">OPID</span>
+        <span class="ds-field">APD (datetime)</span>
+        <span class="ds-field">APL (duration)</span>
+        <span class="ds-field">ATY (type)</span>
+        <span class="ds-field">APS (status)</span>
+        <span class="ds-field">APN (notes)</span>
+        <span class="ds-field">CDT codes</span>
+        <span class="ds-field">fee</span>
+        <span class="ds-field">ISNP</span>
+        <span class="ds-field">ISASAP</span>
+        <span class="ds-field">ISC / ISM / ISP / ISN</span>
+        <span class="ds-field">CBY / CBO</span>
+        <span class="ds-field">MBY / MBO</span>
+        <span class="ds-field">RS (Modified flag)</span>
+      </div>
+    </div>
+
+    <div class="datastore">
+      <div class="datastore-header">
+        <span class="datastore-id">D2</span>
+        <span class="datastore-name">Patient Record</span>
+      </div>
+      <div class="datastore-api">Accessed via: POST /registration/check-existing-patient, GET /patients/v2/{PGID}/{OID}/{PID}, GET /patients/v2/recall</div>
+      <div class="datastore-desc">Patient identity and demographics record keyed by PID (Patient ID) within PGID/OID. RID (Responsible Party ID) is the financially responsible party — may differ from PID. Contains contact consent flags (ISAS, ISAE), active status (AC), patient type (PTY), medical alerts (MEDA), and inline insurance array. Primary key for all appointment and scheduling calls.</div>
+      <div class="datastore-fields">
+        <span class="ds-field">PID</span>
+        <span class="ds-field">RID</span>
+        <span class="ds-field">PGID</span>
+        <span class="ds-field">OID</span>
+        <span class="ds-field">FN / LN / MI</span>
+        <span class="ds-field">BD</span>
+        <span class="ds-field">SX</span>
+        <span class="ds-field">HP / WP / CP</span>
+        <span class="ds-field">EM</span>
+        <span class="ds-field">AD / CT / ST / ZP</span>
+        <span class="ds-field">AC</span>
+        <span class="ds-field">PTY</span>
+        <span class="ds-field">MEDA</span>
+        <span class="ds-field">ISAS</span>
+        <span class="ds-field">ISAE</span>
+        <span class="ds-field">ISCD</span>
+        <span class="ds-field">FV / LV</span>
+        <span class="ds-field">Insurance[]</span>
+        <span class="ds-field">BLC / CURRBLC</span>
+        <span class="ds-field">OVR30 / OVR60 / OVR90 / OVR120</span>
+        <span class="ds-field">PN</span>
+      </div>
+    </div>
+
+    <div class="datastore">
+      <div class="datastore-header">
+        <span class="datastore-id">D3</span>
+        <span class="datastore-name">Schedule / Provider Availability</span>
+      </div>
+      <div class="datastore-api">Accessed via: GET /appointments/availability, GET /setup/provider-blocked-times, GET /setup/appointment-slots</div>
+      <div class="datastore-desc">Provider schedule data defining when appointments can be booked. Scoped by PGID/OID/SID/OPID. Includes open slot start times, durations, operatory assignments, blocked times (out-of-office, holidays, lunch), and slot template priority settings. Read-only from API perspective — written by Denticon admin/practice staff via the admin portal.</div>
+      <div class="datastore-fields">
+        <span class="ds-field">SID (PDR)</span>
+        <span class="ds-field">OPID</span>
+        <span class="ds-field">available start times</span>
+        <span class="ds-field">APL (duration)</span>
+        <span class="ds-field">DH (blocked date)</span>
+        <span class="ds-field">TY (block type)</span>
+        <span class="ds-field">DS / DE (block start/end)</span>
+        <span class="ds-field">LUS / LUE (lunch)</span>
+        <span class="ds-field">EFD (effective date)</span>
+        <span class="ds-field">STS (slot start)</span>
+        <span class="ds-field">DU (slot duration)</span>
+        <span class="ds-field">PRTY</span>
+      </div>
+    </div>
+
+    <div class="datastore">
+      <div class="datastore-header">
+        <span class="datastore-id">D4</span>
+        <span class="datastore-name">Practice Setup Configuration</span>
+      </div>
+      <div class="datastore-api">Accessed via: GET /setup/office-info, GET /setup/providers, GET /setup/operatories, GET /setup/appointment-types, GET /setup/holidays, GET /setup/referral-sources</div>
+      <div class="datastore-desc">Static practice configuration data cached at session initialization. Contains office location details, provider list, operatory definitions, appointment type codes and durations (APNDUR), holiday dates, and referral sources. Rarely changes intra-day — refresh every 4-8 hours is sufficient.</div>
+      <div class="datastore-fields">
+        <span class="ds-field">PGID / OID</span>
+        <span class="ds-field">OFN (office name)</span>
+        <span class="ds-field">office address</span>
+        <span class="ds-field">phone / fax</span>
+        <span class="ds-field">TZ (timezone)</span>
+        <span class="ds-field">WS (website)</span>
+        <span class="ds-field">PDR / SID</span>
+        <span class="ds-field">provider name</span>
+        <span class="ds-field">OPID / OPN</span>
+        <span class="ds-field">ATY codes</span>
+        <span class="ds-field">APNDUR</span>
+        <span class="ds-field">holiday dates</span>
+        <span class="ds-field">referral source codes</span>
+      </div>
+    </div>
+
+    <div class="datastore">
+      <div class="datastore-header">
+        <span class="datastore-id">D5</span>
+        <span class="datastore-name">Recall Record</span>
+      </div>
+      <div class="datastore-api">Accessed via: GET /patients/v2/{PGID}/{OID}/recall</div>
+      <div class="datastore-desc">Patient recall and continuing care records. Keyed by PID and procedure code. Contains recall interval (RCINT months), recall due date (RDT), and last scheduled date (SCHDT). Used to verify recall is actually due before offering a booking during outreach calls. ISCD field on patient record indicates continuing care dental flag.</div>
+      <div class="datastore-fields">
+        <span class="ds-field">PID</span>
+        <span class="ds-field">PGID / OID</span>
+        <span class="ds-field">procedure code</span>
+        <span class="ds-field">RCINT (recall interval months)</span>
+        <span class="ds-field">RDT (recall date)</span>
+        <span class="ds-field">SCHDT (scheduled date)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DATA FLOWS TABLE -->
+  <div class="dataflow-section-title">Data Flows — Denticon Appointment Management Interactions</div>
+  <table class="dataflow-table">
+    <thead>
+      <tr>
+        <th>Flow ID</th>
+        <th>Source</th>
+        <th>Destination</th>
+        <th>Data Elements</th>
+        <th>API Endpoint / Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="df-id">DF-01</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">1.0 Session Init</span></td>
+        <td><span class="df-data">AuthKey, PGID, OID</span></td>
+        <td><span class="df-desc">All API calls — AuthKey (Legacy) or Bearer Token (New API) passed as header. PGID + OID scope required on every request.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-02</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">D4 Practice Setup Configuration</span></td>
+        <td><span class="df-data">PGID, OID</span></td>
+        <td><span class="df-desc">GET /setup/providers, GET /setup/operatories, GET /setup/appointment-types, GET /setup/office-info, GET /setup/holidays — cached at session init.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-03</span></td>
+        <td><span class="df-source">Patient / Caller (E2)</span></td>
+        <td><span class="df-dest">2.0 Patient Identity Resolution</span></td>
+        <td><span class="df-data">FirstName, LastName, BirthDate, phone</span></td>
+        <td><span class="df-desc">Patient provides identity credentials via voice — Voice Agent passes to POST /registration/check-existing-patient.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-04</span></td>
+        <td><span class="df-source">2.0 Patient Identity</span></td>
+        <td><span class="df-dest">D2 Patient Record</span></td>
+        <td><span class="df-data">FirstName, LastName, BirthDate, PGID, OID</span></td>
+        <td><span class="df-desc">POST /registration/check-existing-patient — searches for existing patient. Returns IsExistingPatient + PID if found.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-05</span></td>
+        <td><span class="df-source">D2 Patient Record</span></td>
+        <td><span class="df-dest">2.0 Patient Identity</span></td>
+        <td><span class="df-data">IsExistingPatient, PID, FN, LN, BD</span></td>
+        <td><span class="df-desc">CheckExistingPatient response — PID returned for use in all downstream calls.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-06</span></td>
+        <td><span class="df-source">2.0 Patient Identity</span></td>
+        <td><span class="df-dest">D2 Patient Record</span></td>
+        <td><span class="df-data">PGID, OID, PID</span></td>
+        <td><span class="df-desc">GET /patients/v2/{PGID}/{OID}/{PID} — full patient record retrieved after PID confirmed. Returns demographics, AC, PTY, MEDA, ISAS, insurance[].</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-07</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">D5 Recall Record</span></td>
+        <td><span class="df-data">PGID, OID, PID</span></td>
+        <td><span class="df-desc">GET /patients/v2/{PGID}/{OID}/recall — verify recall is due (RCINT, RDT, SCHDT) before recall-triggered scheduling outreach.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-08</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">3.0 Schedule Availability</span></td>
+        <td><span class="df-data">PGID, OID, SID, date range, ATY</span></td>
+        <td><span class="df-desc">GET /setup/provider-blocked-times — verify provider not blocked before slot search. Returns DH, TY, DS/DE blocked periods.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-09</span></td>
+        <td><span class="df-source">3.0 Schedule Availability</span></td>
+        <td><span class="df-dest">D3 Schedule / Provider Availability</span></td>
+        <td><span class="df-data">PGID, OID, SID, date range, ATY, OPID</span></td>
+        <td><span class="df-desc">GET /appointments/availability — open slots returned with available start times, OPID, SID, and APL (duration).</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-10</span></td>
+        <td><span class="df-source">D3 Schedule / Provider Availability</span></td>
+        <td><span class="df-dest">Voice Agent (E1) → Patient (E2)</span></td>
+        <td><span class="df-data">available start times, OPID, SID, APL</span></td>
+        <td><span class="df-desc">Voice Agent presents 2-3 available slot options to patient for selection.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-11</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">4.0 Appointment Read</span></td>
+        <td><span class="df-data">PGID, OID, PID</span></td>
+        <td><span class="df-desc">GET /appointments/{PGID}/{OID}/{PID} — check patient's existing appointments before offering new slots. Prevents double-booking.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-12</span></td>
+        <td><span class="df-source">4.0 Appointment Read</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, APID or PID or date</span></td>
+        <td><span class="df-desc">GET by patient / GET by APID / GET by date / GET Modified — appointment records read from D1 store.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-13</span></td>
+        <td><span class="df-source">Patient / Caller (E2)</span></td>
+        <td><span class="df-dest">5.0 Appointment Write</span></td>
+        <td><span class="df-data">slot selection, PID, ATY, duration preference</span></td>
+        <td><span class="df-desc">Patient verbally confirms desired slot — Voice Agent triggers POST Add Appointment.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-14</span></td>
+        <td><span class="df-source">5.0 Appointment Write</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, PID, SID, OPID, APD, APL, ATY, APN</span></td>
+        <td><span class="df-desc">POST /appointments/{PGID}/{OID}/add — new appointment created in D1. Returns APID. APS defaults to 'Valid'.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-15</span></td>
+        <td><span class="df-source">D1 Appointment Record</span></td>
+        <td><span class="df-dest">5.0 Appointment Write</span></td>
+        <td><span class="df-data">APID, APS (Valid), Successful</span></td>
+        <td><span class="df-desc">POST Add Appointment response — new APID returned. Immediately follow with PUT status = Confirmed.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-16</span></td>
+        <td><span class="df-source">5.0 Appointment Write</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, APID, APS=Confirmed</span></td>
+        <td><span class="df-desc">PUT /appointments/{PGID}/{OID}/{APID}/status — APS updated to 'Confirmed' after verbal patient acceptance.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-17</span></td>
+        <td><span class="df-source">5.0 Appointment Write</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, APID, APS=Cancelled, cancellation reason</span></td>
+        <td><span class="df-desc">PUT /appointments/{PGID}/{OID}/{APID}/status — APS set to 'Cancelled'. Slot freed immediately. Pass cancellation reason.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-18</span></td>
+        <td><span class="df-source">5.0 Appointment Write</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, APID, APN (note text)</span></td>
+        <td><span class="df-desc">PUT /appointments/{PGID}/{OID}/{APID}/notes — appointment notes updated with reason for visit or IVA interaction context.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-19</span></td>
+        <td><span class="df-source">5.0 Appointment Write</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, APID, ISC/ISM/ISP/ISN flags</span></td>
+        <td><span class="df-desc">PUT /appointments/{PGID}/{OID}/{APID}/reminder-status — reminder flags updated after IVA sends confirmation message to patient.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-20</span></td>
+        <td><span class="df-source">Voice Agent (E1)</span></td>
+        <td><span class="df-dest">4.0 Appointment Read</span></td>
+        <td><span class="df-data">PGID, OID, APID</span></td>
+        <td><span class="df-desc">GET /appointments/{PGID}/{OID}/{APID} — read back full appointment detail after booking. Used for patient confirmation read-back (date, time, provider, office address).</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-21</span></td>
+        <td><span class="df-source">Denticon System</span></td>
+        <td><span class="df-dest">7.0 Webhook Receiver (E5)</span></td>
+        <td><span class="df-data">event type, timestamp, PGID, OID, APID</span></td>
+        <td><span class="df-desc">Denticon pushes HTTP POST webhook to registered endpoint on appointment.created, appointment.status_changed, appointment.cancelled, appointment.completed events.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-22</span></td>
+        <td><span class="df-source">7.0 Webhook Receiver (E5)</span></td>
+        <td><span class="df-dest">4.0 Appointment Read</span></td>
+        <td><span class="df-data">PGID, OID, APID (from webhook payload)</span></td>
+        <td><span class="df-desc">After receiving webhook event, fetch full appointment record via GET /appointments/{PGID}/{OID}/{APID} to get current state.</span></td>
+      </tr>
+      <tr>
+        <td><span class="df-id">DF-23</span></td>
+        <td><span class="df-source">6.0 Reschedule</span></td>
+        <td><span class="df-dest">D1 Appointment Record</span></td>
+        <td><span class="df-data">PGID, OID, old APID, APS=Cancelled + new booking fields</span></td>
+        <td><span class="df-desc">Two-step reschedule: (1) PUT APS=Cancelled on old APID, then (2) POST new appointment. No atomic operation. Secure new slot BEFORE cancelling old one.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- WORKFLOW: PRIMARY — Appointment Booking -->
+  <div class="workflow-section-title">Appointment Booking — Recommended API Sequence</div>
+  <div class="workflow-note">The following sequence reflects the step-by-step booking flow documented in the Denticon API Reference Guide (March 2026), Section: "Appointment Booking — Step-by-Step Flow." All steps reference documented API endpoints only.</div>
+
+  <div class="workflow-steps">
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /setup/providers + operatories + appointment-types + office-info</span>
+          <span class="step-title">Session Initialization — Cache Setup Data</span>
+        </div>
+        <div class="step-desc">At session start, call all Setup API endpoints and cache responses. Providers (PDR/SID), operatories (OPID), appointment types (ATY + APNDUR), office info (OFN, address, TZ), and holidays. Refresh every 4-8 hours — do not call per-appointment. TZ field is required for correct datetime handling.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag">PDR/SID (cached)</span>
+          <span class="field-tag">OPID (cached)</span>
+          <span class="field-tag">ATY + APNDUR (cached)</span>
+          <span class="field-tag">TZ (cached)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">POST /registration/check-existing-patient</span>
+          <span class="step-title">Identify Patient</span>
+        </div>
+        <div class="step-desc">Search for existing patient using FirstName, LastName, BirthDate. Returns IsExistingPatient flag and PID. Run on EVERY inbound call before any scheduling action. Prevents duplicate patient creation.</div>
+        <div class="step-fields">
+          <span class="field-tag required">FirstName</span>
+          <span class="field-tag required">LastName</span>
+          <span class="field-tag required">BirthDate</span>
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag">phone</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /patients/v2/{PGID}/{OID}/{PID}</span>
+          <span class="step-title">Get Full Patient Record</span>
+        </div>
+        <div class="step-desc">Pull complete patient record after PID confirmed. Verify AC=true (active patient). Check MEDA for medical alerts. Verify identity verbally (2 of: DOB, last 4 of phone, zip code) before accessing PHI.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PID</span>
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag">AC (verify = true)</span>
+          <span class="field-tag">MEDA (check alerts)</span>
+          <span class="field-tag">ISCD (recall flag)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /appointments/{PGID}/{OID}/{PID}</span>
+          <span class="step-title">Check Existing Appointments</span>
+        </div>
+        <div class="step-desc">Retrieve all upcoming appointments for the patient. Check for existing upcoming appointments to avoid double-booking. If a future appointment exists, confirm with patient whether they want to keep it, modify it, or book an additional appointment.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">PID</span>
+          <span class="field-tag">date range filter</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /patients/v2/{PGID}/{OID}/recall (if recall call)</span>
+          <span class="step-title">Verify Recall Status (Recall Calls Only)</span>
+        </div>
+        <div class="step-desc">For recall outreach calls, verify RCINT and RDT to confirm recall is actually due. Check SCHDT to ensure patient does not already have a scheduled recall appointment.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">PID</span>
+          <span class="field-tag">RCINT</span>
+          <span class="field-tag">RDT</span>
+          <span class="field-tag">SCHDT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">6</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /setup/provider-blocked-times + GET /appointments/availability</span>
+          <span class="step-title">Find Available Slots</span>
+        </div>
+        <div class="step-desc">First check provider blocked times (out-of-office, holidays) to filter the search range. Then call GET Schedule Availability with PGID, OID, SID (provider), date range, and ATY (appointment type from cached setup). Returns open start times, OPID, and duration. Present 2-3 specific times to patient — keep list fresh.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">SID (from cached providers)</span>
+          <span class="field-tag required">date range</span>
+          <span class="field-tag required">ATY (from cached types)</span>
+          <span class="field-tag">OPID</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">7</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">POST /appointments/{PGID}/{OID}/add</span>
+          <span class="step-title">Book Appointment</span>
+        </div>
+        <div class="step-desc">After patient confirms their selected slot, immediately POST the new appointment. Required: PID, SID, OPID, APD (datetime in MM/DD/YYYYTHH:MM:SS format), APL (duration from APNDUR), ATY (appointment type). Returns APID. APS defaults to 'Valid' on creation.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">PID</span>
+          <span class="field-tag required">SID</span>
+          <span class="field-tag required">OPID</span>
+          <span class="field-tag required">APD</span>
+          <span class="field-tag required">APL (= APNDUR from type)</span>
+          <span class="field-tag required">ATY</span>
+          <span class="field-tag">APN (notes)</span>
+          <span class="field-tag">ISNP</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">8</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">PUT /appointments/{PGID}/{OID}/{APID}/status</span>
+          <span class="step-title">Set Status to Confirmed</span>
+        </div>
+        <div class="step-desc">Immediately after receiving the new APID, PUT the appointment status to 'Confirmed'. This transitions APS from 'Valid' (default on booking) to 'Confirmed' reflecting verbal patient acceptance on the call.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">APID</span>
+          <span class="field-tag required">APS = 'Confirmed'</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">9</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">GET /appointments/{PGID}/{OID}/{APID}</span>
+          <span class="step-title">Read Back Appointment Details to Patient</span>
+        </div>
+        <div class="step-desc">Pull the full appointment record by APID and read back: date, time, provider name, office name, office address (from cached setup), and any pre-appointment instructions. Confirm patient has the correct information.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">APID</span>
+          <span class="field-tag">APD (read back)</span>
+          <span class="field-tag">SID → provider name</span>
+          <span class="field-tag">OFN + address (cached)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num">10</div>
+        <div class="step-line" style="background: transparent;"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-api">PUT /appointments/{PGID}/{OID}/{APID}/reminder-status</span>
+          <span class="step-title">Update Reminder Flags</span>
+        </div>
+        <div class="step-desc">After reading back confirmation to the patient and sending any confirmation message, update the appointment reminder flags: ISC=true (confirmed), ISM=true (messaged) if confirmation SMS/email was sent. Completes the booking flow.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">APID</span>
+          <span class="field-tag">ISC = true</span>
+          <span class="field-tag">ISM = true (if messaged)</span>
+          <span class="field-tag">ISP = true (if portal notified)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WORKFLOW: ALTERNATE — Appointment Cancellation -->
+  <div class="workflow-sub-title">Appointment Cancellation / Reschedule — Recommended API Sequence</div>
+  <div class="workflow-note">Cancellation flow documented in Denticon API Reference Guide (March 2026), Section: "Appointment Cancellation — Step-by-Step Flow." Note: Denticon has NO atomic reschedule endpoint — rescheduling requires the full cancel + rebook two-step sequence shown below.</div>
+
+  <div class="workflow-steps">
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">1</div>
+        <div class="step-line-orange"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">POST /registration/check-existing-patient → GET /patients/v2/{PGID}/{OID}/{PID}</span>
+          <span class="step-title">Identify &amp; Verify Patient</span>
+        </div>
+        <div class="step-desc">Run CheckExistingPatient to get PID. Pull full patient record. Verify identity verbally (2 of: DOB, last 4 of phone, zip). Confirm AC=true before proceeding.</div>
+        <div class="step-fields">
+          <span class="field-tag required">FirstName</span>
+          <span class="field-tag required">LastName</span>
+          <span class="field-tag required">BirthDate</span>
+          <span class="field-tag required">PID (result)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">2</div>
+        <div class="step-line-orange"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">GET /appointments/{PGID}/{OID}/{PID}</span>
+          <span class="step-title">Find Upcoming Appointment (APID)</span>
+        </div>
+        <div class="step-desc">Retrieve all upcoming appointments for the patient. Identify the APID of the appointment to cancel. Confirm appointment details with patient before proceeding (date, time, provider).</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">PID</span>
+          <span class="field-tag">APID (identify target)</span>
+          <span class="field-tag">APD / SID / ATY</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">3</div>
+        <div class="step-line-orange"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">GET /appointments/availability</span>
+          <span class="step-title">Offer to Reschedule FIRST (Proactive Deflection)</span>
+        </div>
+        <div class="step-desc">Before accepting cancellation, search for available replacement slots and offer 2-3 specific times. Proactive deflection significantly reduces true cancellation rate. If patient agrees to reschedule, proceed with the two-step reschedule flow (Steps 4b → 5b) rather than cancellation only.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">SID</span>
+          <span class="field-tag required">date range</span>
+          <span class="field-tag required">ATY</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">4</div>
+        <div class="step-line-orange"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">PUT /appointments/{PGID}/{OID}/{APID}/status (ISASAP flag)</span>
+          <span class="step-title">Offer ASAP Waitlist (If No Immediate Reschedule)</span>
+        </div>
+        <div class="step-desc">If patient declines all offered rescheduling slots, offer to add them to the ASAP/waitlist: set ISASAP=true on a new provisional booking. This converts some cancellations into deferrals. If patient accepts ASAP list, book a future fallback date with ISASAP=true and proceed to soft-cancel or defer the existing appointment.</div>
+        <div class="step-fields">
+          <span class="field-tag required">APID (new provisional)</span>
+          <span class="field-tag required">ISASAP = true</span>
+          <span class="field-tag">APD (future fallback date)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">5</div>
+        <div class="step-line-orange"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">PUT /appointments/{PGID}/{OID}/{APID}/status (APS=Cancelled)</span>
+          <span class="step-title">Cancel Appointment</span>
+        </div>
+        <div class="step-desc">Set APS = 'Cancelled' on the appointment. Include cancellation reason (required for reporting). Slot is freed immediately. If rescheduling: execute this step immediately followed by POST new appointment (Step 6) — do not delay between cancel and rebook.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">APID</span>
+          <span class="field-tag required">APS = 'Cancelled'</span>
+          <span class="field-tag required">cancellation reason</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-step">
+      <div class="step-spine">
+        <div class="step-num-orange">6</div>
+        <div class="step-line-orange" style="background: transparent;"></div>
+      </div>
+      <div class="step-card-orange">
+        <div class="step-card-header">
+          <span class="step-api-orange">POST /appointments/{PGID}/{OID}/add (if rescheduling)</span>
+          <span class="step-title">Book New Appointment (Rescheduling Only)</span>
+        </div>
+        <div class="step-desc">If patient agreed to reschedule, immediately POST the new appointment into the agreed slot. Return new APID. PUT status = 'Confirmed'. Read back new appointment details to patient. If cancellation only (no rescheduling), confirm the cancellation verbally and provide the office phone number for future rebooking.</div>
+        <div class="step-fields">
+          <span class="field-tag required">PGID</span>
+          <span class="field-tag required">OID</span>
+          <span class="field-tag required">PID</span>
+          <span class="field-tag required">SID</span>
+          <span class="field-tag required">OPID</span>
+          <span class="field-tag required">APD (new datetime)</span>
+          <span class="field-tag required">APL</span>
+          <span class="field-tag required">ATY</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

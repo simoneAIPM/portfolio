@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HelixCare · Enterprise LLM Assistant — Billing &amp; Payment Design v1</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #111827; --surface2: #1a2234;
+    --border: #1f2d42; --border-bright: #2a3f5a;
+    --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.10); --purple-border: rgba(167,139,250,0.22);
+    --blue: #60a5fa; --blue-dim: rgba(96,165,250,0.08); --blue-border: rgba(96,165,250,0.22);
+    --orange: #fb923c; --orange-dim: rgba(251,146,60,0.08); --orange-border: rgba(251,146,60,0.22);
+    --red: #f87171; --red-dim: rgba(248,113,113,0.08); --red-border: rgba(248,113,113,0.22);
+    --green: #4ade80; --green-dim: rgba(74,222,128,0.08); --green-border: rgba(74,222,128,0.22);
+    --teal: #2dd4bf; --teal-dim: rgba(45,212,191,0.08); --teal-border: rgba(45,212,191,0.22);
+    --cyan: #67e8f9; --cyan-dim: rgba(103,232,249,0.06); --cyan-border: rgba(103,232,249,0.20);
+    --yellow: #fbbf24; --yellow-dim: rgba(251,191,36,0.08); --yellow-border: rgba(251,191,36,0.22);
+    --pink: #f472b6; --pink-dim: rgba(244,114,182,0.08); --pink-border: rgba(244,114,182,0.22);
+    --text: #e2e8f0; --text-muted: #94a3b8; --text-dim: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; padding: 36px 20px 80px; }
+  .template-band { max-width: 1400px; margin: 0 auto 20px; padding: 10px 18px; background: rgba(103,232,249,0.08); border: 1px solid rgba(103,232,249,0.30); border-radius: 8px; display:flex; gap:12px; align-items:center; }
+  .template-band-icon { font-size:16px; color:var(--cyan); }
+  .template-band-text { font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:1.5px; color:var(--cyan);}
+  .template-band-text strong { color:var(--text);}
+  .page-header { max-width: 1400px; margin:0 auto 28px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; padding-bottom:20px; border-bottom:1px solid var(--border-bright);}
+  .header-left .overline { font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:8px;}
+  .header-left h1 { font-size:28px; font-weight:700; color:var(--text); margin-bottom:4px;}
+  .header-left p { font-size:13px; color:var(--text-muted);}
+  .header-badges { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .header-badge { font-family:'IBM Plex Mono', monospace; font-size:10px; padding:5px 10px; background:var(--blue-dim); border:1px solid var(--blue-border); border-radius:6px; color:var(--blue); white-space:nowrap;}
+  .header-badge.green{background:var(--green-dim);border-color:var(--green-border);color:var(--green);}
+  .header-badge.teal{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal);}
+  .header-badge.purple{background:var(--purple-dim);border-color:var(--purple-border);color:var(--purple);}
+  .header-badge.orange{background:var(--orange-dim);border-color:var(--orange-border);color:var(--orange);}
+  .header-badge.red{background:var(--red-dim);border-color:var(--red-border);color:var(--red);}
+  .principles-bar { max-width:1400px; margin:0 auto 24px; display:grid; grid-template-columns:repeat(5, 1fr); gap:10px;}
+  .principle-card { background:var(--surface); border:1px solid var(--border-bright); border-radius:8px; padding:12px 14px;}
+  .principle-title { font-family:'IBM Plex Mono', monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; color:var(--text);}
+  .principle-desc { font-size:10px; color:var(--text-muted); line-height:1.45;}
+  .layout { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:1fr 340px; gap:28px; align-items:start;}
+  .main-flow { display:flex; flex-direction:column; gap:0; }
+  .flow-step { display:flex; gap:16px; align-items:flex-start; }
+  .step-spine { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:36px; }
+  .step-num { width:36px; height:36px; border-radius:50%; border:2px solid currentColor; background:var(--bg); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600; z-index:2;}
+  .step-line { width:2px; min-height:24px; flex:1; }
+  .step-card { flex:1; padding:18px 20px; border-radius:10px; border:1px solid var(--border); margin-bottom:6px; position:relative; }
+  .card-tag { font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; font-weight:600; margin-bottom:5px; }
+  .card-title { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .card-body { font-size:12.5px; color:var(--text-muted); line-height:1.65; margin-bottom:10px; }
+  .v-purple .step-num{color:var(--purple);} .v-purple .step-card{background:var(--purple-dim);border-color:var(--purple-border);} .v-purple .step-line{background:var(--purple-border);} .v-purple .card-tag{color:var(--purple);} .v-purple .card-title{color:var(--purple);}
+  .v-blue .step-num{color:var(--blue);} .v-blue .step-card{background:var(--blue-dim);border-color:var(--blue-border);} .v-blue .step-line{background:var(--blue-border);} .v-blue .card-tag{color:var(--blue);} .v-blue .card-title{color:var(--blue);}
+  .v-orange .step-num{color:var(--orange);} .v-orange .step-card{background:var(--orange-dim);border-color:var(--orange-border);} .v-orange .step-line{background:var(--orange-border);} .v-orange .card-tag{color:var(--orange);} .v-orange .card-title{color:var(--orange);}
+  .v-red .step-num{color:var(--red);} .v-red .step-card{background:var(--red-dim);border-color:var(--red-border);} .v-red .step-line{background:var(--red-border);} .v-red .card-tag{color:var(--red);} .v-red .card-title{color:var(--red);}
+  .v-green .step-num{color:var(--green);} .v-green .step-card{background:var(--green-dim);border-color:var(--green-border);} .v-green .step-line{background:var(--green-border);} .v-green .card-tag{color:var(--green);} .v-green .card-title{color:var(--green);}
+  .v-teal .step-num{color:var(--teal);} .v-teal .step-card{background:var(--teal-dim);border-color:var(--teal-border);} .v-teal .step-line{background:var(--teal-border);} .v-teal .card-tag{color:var(--teal);} .v-teal .card-title{color:var(--teal);}
+  .v-cyan .step-num{color:var(--cyan);} .v-cyan .step-card{background:var(--cyan-dim);border-color:var(--cyan-border);} .v-cyan .step-line{background:var(--cyan-border);} .v-cyan .card-tag{color:var(--cyan);} .v-cyan .card-title{color:var(--cyan);}
+  .v-yellow .step-num{color:var(--yellow);} .v-yellow .step-card{background:var(--yellow-dim);border-color:var(--yellow-border);} .v-yellow .step-line{background:var(--yellow-border);} .v-yellow .card-tag{color:var(--yellow);} .v-yellow .card-title{color:var(--yellow);}
+  .decision-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
+  .decision-grid.three-col { grid-template-columns:repeat(3,1fr); }
+  .decision-grid.four-col { grid-template-columns:repeat(4,1fr); }
+  .decision-box { background:var(--surface2); border:1px solid var(--border-bright); border-radius:8px; padding:12px 14px; }
+  .decision-box-label { font-family:'IBM Plex Mono', monospace; font-size:10px; font-weight:600; margin-bottom:6px; }
+  .decision-list { display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--text-muted); }
+  .decision-item { display:flex; gap:6px; align-items:flex-start; }
+  .decision-item::before { content:'→'; color:var(--text-dim); flex-shrink:0; }
+  .script-box { background:var(--surface2); border:1px solid var(--border-bright); border-radius:8px; padding:14px 16px; margin-top:12px;}
+  .script-label { font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:8px; }
+  .script-text { font-size:12px; color:var(--text); line-height:1.7; font-style:italic; border-left:3px solid var(--teal-border); padding:10px 12px; border-radius:0 6px 6px 0; background:rgba(45,212,191,0.03);}
+  .callout { display:flex; gap:10px; padding:10px 14px; border-radius:8px; margin-top:10px; font-size:11.5px; line-height:1.5; }
+  .callout-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+  .callout-body { color:var(--text-muted); }
+  .callout-body strong { color:var(--text); }
+  .c-insight { background:rgba(96,165,250,0.05); border:1px solid rgba(96,165,250,0.18);}
+  .c-warn { background:rgba(251,146,60,0.05); border:1px solid rgba(251,146,60,0.2);}
+  .c-crit { background:rgba(248,113,113,0.05); border:1px solid rgba(248,113,113,0.2);}
+  .c-tip { background:rgba(74,222,128,0.04); border:1px solid rgba(74,222,128,0.18);}
+  .c-purple { background:rgba(167,139,250,0.05); border:1px solid rgba(167,139,250,0.2);}
+  .pill-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+  .pill { font-family:'IBM Plex Mono', monospace; font-size:10px; padding:2px 8px; border-radius:4px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border-bright);}
+  .pill.p-client { background:rgba(167,139,250,0.08); border-color:rgba(167,139,250,0.3); color:var(--purple); }
+  .pill.p-required { background:rgba(251,146,60,0.08); border-color:rgba(251,146,60,0.3); color:var(--orange); }
+  .kpi-toggle { margin-top:12px; }
+  .kpi-toggle-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface2); border:1px solid var(--border-bright); border-radius:8px; cursor:pointer; }
+  .kpi-toggle-title { font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .kpi-toggle-icon { font-size:14px; transition:transform 0.2s ease; }
+  .kpi-toggle-content { display:none; padding:14px; background:rgba(17,24,39,0.5); border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px; margin-top:-1px; }
+  .kpi-toggle.open .kpi-toggle-content { display:block; }
+  .kpi-toggle.open .kpi-toggle-icon { transform:rotate(180deg); }
+  .kpi-toggle.open .kpi-toggle-header { border-radius:8px 8px 0 0; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+  .kpi-item { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:10px 12px; }
+  .kpi-name { font-family:'IBM Plex Mono', monospace; font-size:9px; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .kpi-desc { font-size:10.5px; color:var(--text-muted); line-height:1.4; }
+  .milestone-list { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+  .milestone-item { display:flex; align-items:flex-start; gap:8px; font-size:11px; color:var(--text-muted);}
+  .milestone-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .section-title { font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim); margin:20px 0 10px; padding-left:52px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+  .loop-banner { margin-left:52px; display:flex; align-items:center; gap:10px; padding:10px 14px; background:rgba(45,212,191,0.04); border:1px dashed rgba(45,212,191,0.2); border-radius:8px; margin-top:4px; font-size:12px; color:var(--text-muted); }
+  .sidebar { display:flex; flex-direction:column; gap:16px; }
+  .side-panel { background:var(--surface); border:1px solid var(--border-bright); border-radius:10px; overflow:hidden; }
+  .side-panel-header { display:flex; align-items:center; gap:8px; padding:11px 14px; border-bottom:1px solid var(--border); }
+  .sph-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .sph-label { font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:600; color:var(--text); }
+  .side-panel-body { padding:12px 14px; }
+  .rules-list, .api-list, .open-items-list { display:flex; flex-direction:column; gap:8px; list-style:none; }
+  .rule-item { font-size:11px; padding:8px 10px; background:var(--surface2); border-radius:6px; border-left:3px solid var(--border-bright); color:var(--text-muted); line-height:1.45; }
+  .rule-item strong { color:var(--text); }
+  .r-stop{border-left-color:rgba(248,113,113,0.5);}
+  .r-warn{border-left-color:rgba(251,146,60,0.5);}
+  .r-rule{border-left-color:rgba(96,165,250,0.5);}
+  .r-tip{border-left-color:rgba(74,222,128,0.5);}
+  .r-purple{border-left-color:rgba(167,139,250,0.5);}
+  .r-teal{border-left-color:rgba(45,212,191,0.5);}
+  .api-item { padding-bottom:8px; border-bottom:1px solid var(--border); }
+  .api-item:last-child { border-bottom:none; padding-bottom:0; }
+  .api-name { font-family:'IBM Plex Mono', monospace; font-size:10px; font-weight:600; color:var(--green); margin-bottom:2px; }
+  .api-method { font-family:'IBM Plex Mono', monospace; font-size:9px; color:var(--blue); margin-bottom:2px; }
+  .api-desc { font-size:10.5px; color:var(--text-muted); line-height:1.4; }
+  .open-item { background:var(--surface2); border-radius:6px; padding:9px 12px; border-left:3px solid; }
+  .open-item.oi-crit{border-left-color:rgba(248,113,113,0.6);}
+  .open-item.oi-req{border-left-color:rgba(251,146,60,0.6);}
+  .open-item.oi-need{border-left-color:rgba(96,165,250,0.5);}
+  .open-item-priority { font-family:'IBM Plex Mono', monospace; font-size:8px; letter-spacing:1.5px; text-transform:uppercase; font-weight:600; margin-bottom:3px; }
+  .oi-crit .open-item-priority{color:var(--red);} .oi-req .open-item-priority{color:var(--orange);} .oi-need .open-item-priority{color:var(--blue);}
+  .open-item-text { font-size:10.5px; color:var(--text-muted); line-height:1.4; }
+  .open-item-text strong { color:var(--text);}
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .mini-card { padding:14px 16px; border-radius:10px; border:1px solid var(--border); font-size:12px; background:var(--surface2);}
+  .mini-card h4 { font-size:13px; font-weight:700; margin-bottom:5px; color:var(--text);}
+  .mini-card p { font-size:11.5px; color:var(--text-muted); line-height:1.5;}
+  .table { width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+  .table th { font-family:'IBM Plex Mono', monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); padding:7px 10px; text-align:left; background:var(--surface2); border-bottom:1px solid var(--border);}
+  .table td { padding:8px 10px; border-bottom:1px solid rgba(31,45,66,0.5); color:var(--text-muted); vertical-align:top; }
+  .table tr:last-child td { border-bottom:none; }
+  .strong { color:var(--text); font-weight:600; }
+  @media (max-width:1100px) {
+    .layout { grid-template-columns:1fr; }
+    .principles-bar { grid-template-columns:1fr 1fr; }
+    .decision-grid, .decision-grid.three-col, .decision-grid.four-col, .two-col, .kpi-grid { grid-template-columns:1fr; }
+  }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.kpi-toggle').forEach(function(el) {
+    el.addEventListener('click', function() { this.classList.toggle('open'); });
+  });
+});
+</script>
+<style>
+.watermark {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.watermark span {
+  position: absolute;
+  font-size: 50px;
+  color: rgba(255,255,255,0.06);
+  transform: rotate(-30deg);
+  white-space: nowrap;
+}
+</style></head>
+<body><div class="watermark"><span style="top:10%; left:10%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span><span style="top:30%; left:40%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span><span style="top:60%; left:20%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span><span style="top:80%; left:60%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span><span style="top:20%; left:70%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span><span style="top:50%; left:50%;">© Simone Wilson — AI Product Portfolio | Confidential | Do not replicate or use without permission</span></div>
+<div class="template-band">
+<span class="template-band-icon">◎</span>
+<span class="template-band-text"><strong>PORTFOLIO DEMO — HELIXCARE ENTERPRISE LLM DESIGN</strong> | Built on signature IVA design system principles | Billing, Balance, Payment, FAQ, Escalation | v1.0 · Mar 2026</span>
+</div>
+<div class="page-header">
+<div class="header-left">
+<div class="overline">Enterprise LLM Assistant · Billing &amp; Payment Orchestration · Voice + Chat + SMS · Portfolio Sample</div>
+<h1>HelixCare — AI Assistant Billing &amp; Payment Standard</h1>
+<p>Orchestration Layer · ANI / Identity · Balance Inquiry · Payment Capture · FAQ · Guardrails · Fallbacks · Human Handoff · KPI Framework</p>
+</div>
+<div class="header-badges">
+<div class="header-badge purple">Portfolio Spec</div>
+<div class="header-badge teal">PMS: HelixCore PMS</div>
+<div class="header-badge green">Assistant: HCAI</div>
+<div class="header-badge orange">Channel: Voice + Chat + SMS</div>
+<div class="header-badge red">Escalation: Warm Transfer</div>
+<div class="header-badge">PHI-Safe Billing Flow</div>
+</div>
+</div>
+<div style="max-width:1400px;margin:0 auto 28px;">
+<div style="background:rgba(103,232,249,0.06);border:1px solid rgba(103,232,249,0.25);border-radius:10px;padding:18px 22px;">
+<div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;font-weight:600;">★ Design Intent</div>
+<div class="two-col">
+<div class="mini-card" style="border-color:var(--cyan-border);">
+<h4>What This Artifact Demonstrates</h4>
+<p>This sample shows how a healthcare-grade LLM assistant can operate as a controlled orchestration system, not a free-roaming chatbot. The LLM handles language, clarification, and confidence scoring. APIs remain the source of truth for balances, payment status, and patient-specific data.</p>
+</div>
+<div class="mini-card" style="border-color:var(--purple-border);">
+<h4>What Makes This “Senior-Level”</h4>
+<p>Every step explicitly defines decision logic, failure handling, guardrails, and revenue-linked KPIs. The result reads like something product, design, engineering, security, and operations could all approve without needing a separate translation layer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="principles-bar">
+<div class="principle-card">
+<div class="principle-title">APIs for Truth</div>
+<div class="principle-desc">Balances, due dates, payment outcomes, and account attributes are never generated by the model. All transactional facts are retrieved from HelixCare APIs or billing systems of record.</div>
+</div>
+<div class="principle-card">
+<div class="principle-title">LLM for Reasoning</div>
+<div class="principle-desc">The LLM classifies intent, handles clarifications, rewrites technical content into human language, and adapts to channel context. It does not invent or finalize financial outcomes.</div>
+</div>
+<div class="principle-card">
+<div class="principle-title">Auth Before PHI</div>
+<div class="principle-desc">Any balance, due date, payment history, or billing arrangement requires identity verification. FAQ-only interactions can remain unauthenticated when no PHI is exposed.</div>
+</div>
+<div class="principle-card">
+<div class="principle-title">Fail Gracefully</div>
+<div class="principle-desc">API errors, low-confidence intents, tokenization failures, and auth failures all have defined fallback paths. The system never leaves the user in a conversational cul-de-sac.</div>
+</div>
+<div class="principle-card">
+<div class="principle-title">Design for Adoption</div>
+<div class="principle-desc">The assistant sounds helpful, direct, and respectful. It avoids stiff compliance theater while still handling disclosure, security, and escalation in a way users can tolerate.</div>
+</div>
+</div>
+<div class="layout">
+<div class="main-flow">
+<div class="flow-step v-cyan">
+<div class="step-spine">
+<div class="step-num" style="font-size:10px;">OS</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">System Layer · Orchestration Engine · Routing · Confidence · Policy</div>
+<div class="card-title">Orchestration Layer — The System Brain</div>
+<div class="card-body">All billing and payment interactions are governed by a centralized orchestration layer. This layer decides when to invoke APIs, when to let the LLM respond, when authentication is required, when to escalate, and how to recover from failures. This is the control tower. The assistant’s tone may feel conversational, but the operating model underneath is stubbornly deterministic where it matters.</div>
+<div class="decision-grid three-col">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--cyan);">Execution Priority</div>
+<div class="decision-list">
+<div class="decision-item">1. Security + policy checks</div>
+<div class="decision-item">2. API retrieval for financial facts</div>
+<div class="decision-item">3. Rules engine for routing</div>
+<div class="decision-item">4. LLM for phrasing and clarification</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--blue);">Confidence Logic</div>
+<div class="decision-list">
+<div class="decision-item">≥ 0.85 confidence: proceed to mapped flow</div>
+<div class="decision-item">0.60–0.84: ask one clarification</div>
+<div class="decision-item">&lt; 0.60: offer guided options or agent</div>
+<div class="decision-item">Repeat confusion: immediate escalation</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--orange);">Recovery Logic</div>
+<div class="decision-list">
+<div class="decision-item">API failure: retry twice with backoff</div>
+<div class="decision-item">Payment failure: alternate method or agent</div>
+<div class="decision-item">Auth failure: generic message, no PHI disclosure</div>
+<div class="decision-item">User frustration: bypass automation</div>
+</div>
+</div>
+</div>
+<div class="callout c-purple">
+<span class="callout-icon">🧠</span>
+<div class="callout-body"><strong>LLM Role Boundary:</strong> The model may summarize, clarify, and soften system language, but it cannot fabricate balances, dates, payment confirmations, or policy answers when source data is unavailable. If truth is missing, the experience must say so plainly and route to the next safest option.</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">Confidence threshold: 0.85 / 0.60</span>
+<span class="pill">API-first for billing</span>
+<span class="pill">LLM for phrasing + reasoning</span>
+<span class="pill p-required">Escalate on repeated ambiguity</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-purple">
+<div class="step-spine">
+<div class="step-num" style="font-size:10px;">AUTH</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Pre-Interaction · Session Init · Token Management · Channel Context</div>
+<div class="card-title">Acquire Tokens, Resolve Session Context, and Prepare Tool Access</div>
+<div class="card-body">Before the assistant acts on billing workflows, platform credentials and channel metadata must already be in place. Web chat sessions use authenticated user context when available. Voice sessions rely on ANI and session tokens. SMS sessions reuse the most recent verified context only within a defined expiry window. Token refresh is proactive. Secrets never touch logs. This is the plumbing nobody claps for until it breaks.</div>
+<div class="decision-grid">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--purple);">Session Sources</div>
+<div class="decision-list">
+<div class="decision-item">Voice: ANI + session ID</div>
+<div class="decision-item">Web: signed user token</div>
+<div class="decision-item">SMS: mobile number + recent verified session</div>
+<div class="decision-item">All channels: channel metadata stamped into commlog</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--teal);">Security Controls</div>
+<div class="decision-list">
+<div class="decision-item">Bearer token refresh before expiry</div>
+<div class="decision-item">Credential storage in secrets vault</div>
+<div class="decision-item">No PHI in error logs</div>
+<div class="decision-item">Rate-limit aware retry handling</div>
+</div>
+</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">POST /oauth/token</span>
+<span class="pill p-client">Session source: voice, web, sms</span>
+<span class="pill">No credential logging</span>
+<span class="pill">Commlog channel tagging</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-teal">
+<div class="step-spine">
+<div class="step-num">0</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Entry · Disclosure · Greeting · ANI Lookup</div>
+<div class="card-title">Open the Conversation and Quietly Resolve Who Might Be Calling</div>
+<div class="card-body">Voice starts with a short disclosure and immediately performs an ANI lookup in the background. Web and chat do not need spoken disclosure, but they follow the same identity resolution pattern. If a likely patient match is found, the assistant uses that only to streamline the next step, never to expose protected information. It can sound warm without becoming reckless.</div>
+<div class="decision-grid">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--teal);">Voice Path</div>
+<div class="decision-list">
+<div class="decision-item">Play recording disclosure</div>
+<div class="decision-item">Run ANI lookup concurrently</div>
+<div class="decision-item">Start with neutral greeting</div>
+<div class="decision-item">Do not surface PHI yet</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--blue);">Digital Path</div>
+<div class="decision-list">
+<div class="decision-item">Use signed session if available</div>
+<div class="decision-item">Else prompt for billing help intent</div>
+<div class="decision-item">Defer account details until verified</div>
+<div class="decision-item">Maintain channel-appropriate brevity</div>
+</div>
+</div>
+</div>
+<div class="script-box">
+<div class="script-label" style="color:var(--teal);">Canonical Opening Script</div>
+<div class="script-text">“Thanks for contacting HelixCare. I can help with balances, payments, billing questions, and payment plans. What would you like help with today?”</div>
+</div>
+<div class="callout c-insight">
+<span class="callout-icon">ℹ</span>
+<div class="callout-body"><strong>Design Note:</strong> The opening does not ask for account data upfront. The system earns the right to ask for verification after it understands the request. That keeps the experience feeling service-oriented instead of bureaucratic.</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">GET /patients?phone={ANI}</span>
+<span class="pill">No PHI pre-auth</span>
+<span class="pill">Neutral greeting first</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-blue">
+<div class="step-spine">
+<div class="step-num">1</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Intent Detection · LLM Confidence · Clarification</div>
+<div class="card-title">Classify What the User Actually Wants</div>
+<div class="card-body">The assistant classifies requests into balance inquiry, make payment, payment plan, billing FAQ, refund/dispute, or human escalation. The LLM handles natural language, slang, and messy phrasing. The orchestration layer interprets confidence and decides whether to proceed, clarify once, or transfer.</div>
+<div class="decision-grid three-col">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--blue);">Primary Billing Intents</div>
+<div class="decision-list">
+<div class="decision-item">BALANCE_INQUIRY</div>
+<div class="decision-item">MAKE_PAYMENT</div>
+<div class="decision-item">PAYMENT_PLAN</div>
+<div class="decision-item">BILLING_FAQ</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--orange);">High-Risk / Transfer Intents</div>
+<div class="decision-list">
+<div class="decision-item">BILLING_DISPUTE</div>
+<div class="decision-item">REFUND_REQUEST</div>
+<div class="decision-item">CHARGEBACK / FRAUD</div>
+<div class="decision-item">LEGAL / COMPLIANCE COMPLAINT</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--purple);">Confidence Actions</div>
+<div class="decision-list">
+<div class="decision-item">High: direct route</div>
+<div class="decision-item">Medium: one clarifying question</div>
+<div class="decision-item">Low: “I can connect you with billing”</div>
+<div class="decision-item">Second confusion: immediate handoff</div>
+</div>
+</div>
+</div>
+<div class="script-box">
+<div class="script-label" style="color:var(--blue);">Clarification Script</div>
+<div class="script-text">“I can help with your balance, a payment, or a payment plan. Which one would you like to do?”</div>
+</div>
+<div class="callout c-purple">
+<span class="callout-icon">🧠</span>
+<div class="callout-body"><strong>LLM Decision Layer:</strong> Intent classification is performed by an LLM with confidence scoring. High-confidence requests move directly into the mapped flow. Medium-confidence requests get one clarifying turn. Low-confidence or emotionally charged requests are routed to a human before the system starts guessing.</div>
+</div>
+<div class="kpi-toggle">
+<div class="kpi-toggle-header">
+<span class="kpi-toggle-title" style="color:var(--blue);">KPIs &amp; Milestones — Intent Detection</span>
+<span class="kpi-toggle-icon">▼</span>
+</div>
+<div class="kpi-toggle-content">
+<div class="kpi-grid">
+<div class="kpi-item"><div class="kpi-name" style="color:var(--blue);">First-Turn Intent Accuracy</div><div class="kpi-desc">% of billing intents classified correctly from the first utterance. Target: 90%+</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--orange);">Clarification Rate</div><div class="kpi-desc">% of sessions needing one clarification. Healthy if bounded; unhealthy if climbing.</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--red);">Misroute Rate</div><div class="kpi-desc">% of sessions sent into the wrong operational flow. Target: &lt; 3%</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--purple);">Escalation from Ambiguity</div><div class="kpi-desc">% of sessions handed to humans because confidence never stabilized.</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flow-step v-orange">
+<div class="step-spine">
+<div class="step-num">2</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Identity &amp; Authentication · PHI Gate · Retry Rules</div>
+<div class="card-title">Verify Identity Before Showing Balance or Taking Payment</div>
+<div class="card-body">Any balance, invoice amount, due date, saved payment method, or payment plan eligibility requires successful identity verification. If ANI or signed context suggests a likely user, verification can be shorter. If not, the assistant gathers identifiers and verifies them through HelixCare APIs. Maximum of two failed attempts before transfer. Failure language remains generic to avoid confirming whether a record exists.</div>
+<div class="decision-grid three-col">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--orange);">Known Session</div>
+<div class="decision-list">
+<div class="decision-item">Ask for DOB only</div>
+<div class="decision-item">Verify against patient profile</div>
+<div class="decision-item">Success: proceed to billing tools</div>
+<div class="decision-item">2 failures: transfer</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--blue);">Unknown Session</div>
+<div class="decision-list">
+<div class="decision-item">Collect phone or account number</div>
+<div class="decision-item">Lookup candidate record</div>
+<div class="decision-item">Confirm DOB or ZIP</div>
+<div class="decision-item">No match: transfer</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--red);">Failure Language</div>
+<div class="decision-list">
+<div class="decision-item">“I wasn’t able to verify your information.”</div>
+<div class="decision-item">No record confirmation or denial</div>
+<div class="decision-item">Offer billing team handoff</div>
+<div class="decision-item">Log failure reason internally only</div>
+</div>
+</div>
+</div>
+<div class="script-box">
+<div class="script-label" style="color:var(--orange);">Canonical Auth Script</div>
+<div class="script-text">“Before I pull up your billing details, I need to verify your information. Please say or enter your date of birth.”</div>
+</div>
+<div class="callout c-crit">
+<span class="callout-icon">!</span>
+<div class="callout-body"><strong>PHI Guardrail:</strong> The system must not reveal whether an account exists until verification is complete. Even a seemingly helpful phrase like “I found you” is off-limits before auth. Friendly still needs a seatbelt.</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">POST /auth/verify</span>
+<span class="pill p-client">GET /patients?phone=</span>
+<span class="pill">Max 2 failures</span>
+<span class="pill p-required">Generic auth failure language</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-green">
+<div class="step-spine">
+<div class="step-num">3</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Balance Retrieval · API Truth · Decisioning</div>
+<div class="card-title">Retrieve the Balance and Decide the Next Best Action</div>
+<div class="card-body">Once identity is confirmed, the system retrieves current balance, due date, eligible invoices, and payment-plan flags. The assistant then adapts the next step based on returned data. A zero balance does not trigger payment prompts. A delinquent balance can trigger a payment-plan offer. API responses drive the flow, not generic copy.</div>
+<div class="decision-grid three-col">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--green);">If Balance = 0</div>
+<div class="decision-list">
+<div class="decision-item">Inform user no balance is due</div>
+<div class="decision-item">Offer email or SMS receipt if recent payment exists</div>
+<div class="decision-item">End or route to billing FAQ</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--yellow);">If Balance &gt; 0</div>
+<div class="decision-list">
+<div class="decision-item">Read total due and due date</div>
+<div class="decision-item">Offer full or partial payment</div>
+<div class="decision-item">Offer plan if eligible</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--red);">If API Fails</div>
+<div class="decision-list">
+<div class="decision-item">Retry twice with backoff</div>
+<div class="decision-item">Fallback message without making up numbers</div>
+<div class="decision-item">Warm transfer to billing</div>
+</div>
+</div>
+</div>
+<div class="script-box">
+<div class="script-label" style="color:var(--green);">Canonical Balance Script</div>
+<div class="script-text">“Your current balance is $142.50, and it is due on March 30. Would you like to pay this amount, make a different payment, or hear your payment plan options?”</div>
+</div>
+<div class="callout c-purple">
+<span class="callout-icon">🧠</span>
+<div class="callout-body"><strong>Decision-Aware API Use:</strong> The system does not just fetch a balance. It interprets the response. If balance is zero, it avoids a dead-end “Would you like to pay?” moment. If planEligible is true, it introduces a plan option at exactly the point it becomes relevant.</div>
+</div>
+<div class="kpi-toggle">
+<div class="kpi-toggle-header">
+<span class="kpi-toggle-title" style="color:var(--green);">KPIs &amp; Milestones — Balance Retrieval</span>
+<span class="kpi-toggle-icon">▼</span>
+</div>
+<div class="kpi-toggle-content">
+<div class="kpi-grid">
+<div class="kpi-item"><div class="kpi-name" style="color:var(--green);">Balance Retrieval Success</div><div class="kpi-desc">% of verified sessions returning valid balance data on first attempt. Target: 98%+</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--yellow);">Payment Offer Rate</div><div class="kpi-desc">% of positive-balance sessions where payment is offered correctly. Target: 100%</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--red);">API Timeout Recovery</div><div class="kpi-desc">% of API failures recovered via retry before escalation.</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--purple);">Zero-Balance Containment</div><div class="kpi-desc">% of zero-balance callers resolved without human help.</div></div>
+</div>
+</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">GET /billing/balance?patientId=</span>
+<span class="pill p-client">GET /billing/invoices?patientId=</span>
+<span class="pill">Zero-balance branching</span>
+<span class="pill">Plan eligibility branching</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-yellow">
+<div class="step-spine">
+<div class="step-num">4</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Payment Decision · Amount Selection · Fee Disclosure</div>
+<div class="card-title">Let the User Choose Full, Partial, or Plan-Based Payment</div>
+<div class="card-body">After the balance is read, the assistant offers the clearest next moves: pay in full, pay a different amount, or hear plan options. If a fee applies for card or channel usage, the system discloses that before capture. Minimum payment thresholds may exist in the backend, but the assistant should only surface what policy allows users to act on. Internal constraints belong backstage, not in the spotlight.</div>
+<table class="table">
+<thead><tr><th>Choice</th><th>System Action</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="strong">Pay Full Balance</td><td>Use retrieved total due</td><td>Fastest route, highest containment</td></tr>
+<tr><td class="strong">Pay Different Amount</td><td>Validate amount against allowed range</td><td>Reject non-positive or policy-violating amounts</td></tr>
+<tr><td class="strong">Payment Plan</td><td>Retrieve options or transfer</td><td>Only if planEligible is true</td></tr>
+</tbody>
+</table>
+<div class="callout c-warn">
+<span class="callout-icon">⚠</span>
+<div class="callout-body"><strong>Fee Disclosure Rule:</strong> If a convenience fee applies, the assistant must disclose the fee before card entry or charge confirmation. No surprise math after the user has already mentally checked out.</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">GET /payments/fees?channel=</span>
+<span class="pill p-client">GET /billing/planOptions?patientId=</span>
+<span class="pill">Full / partial / plan branching</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-pink">
+<div class="step-spine">
+<div class="step-num">5</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Payment Capture · Tokenization · Charge Execution</div>
+<div class="card-title">Capture Payment Securely and Resolve the Transaction</div>
+<div class="card-body">The assistant collects payment through a PCI-safe capture experience. Card data is tokenized immediately and never retained in conversational logs. Once tokenization succeeds, the charge request is submitted. If tokenization or charging fails, the assistant offers a retry, alternate method, or billing handoff.</div>
+<div class="decision-grid">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--pink);">Success Path</div>
+<div class="decision-list">
+<div class="decision-item">Tokenize payment method</div>
+<div class="decision-item">POST charge request</div>
+<div class="decision-item">Receive transaction ID</div>
+<div class="decision-item">Proceed to confirmation</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--red);">Failure Path</div>
+<div class="decision-list">
+<div class="decision-item">Tokenization error: restart capture once</div>
+<div class="decision-item">Charge failure: offer alternate amount or method</div>
+<div class="decision-item">Repeated failure: transfer to billing</div>
+<div class="decision-item">Log reason code internally</div>
+</div>
+</div>
+</div>
+<div class="callout c-crit">
+<span class="callout-icon">!</span>
+<div class="callout-body"><strong>Security Guardrail:</strong> Raw payment data must never be displayed back to the user or logged in conversation transcripts. The assistant may confirm last-four digits only if returned by the tokenization service in a compliant manner.</div>
+</div>
+<div class="kpi-toggle">
+<div class="kpi-toggle-header">
+<span class="kpi-toggle-title" style="color:var(--pink);">KPIs &amp; Milestones — Payment Capture</span>
+<span class="kpi-toggle-icon">▼</span>
+</div>
+<div class="kpi-toggle-content">
+<div class="kpi-grid">
+<div class="kpi-item"><div class="kpi-name" style="color:var(--pink);">Payment Completion Rate</div><div class="kpi-desc">% of payment-intent sessions that complete successfully. Target: 40%+ of positive-balance sessions</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--green);">Tokenization Success Rate</div><div class="kpi-desc">% of payment method captures that successfully tokenize on first attempt.</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--red);">Abandonment Before Submit</div><div class="kpi-desc">% of users who drop before confirming the charge. Useful for UX tuning and disclosure timing.</div></div>
+<div class="kpi-item"><div class="kpi-name" style="color:var(--orange);">Alternate Method Recovery</div><div class="kpi-desc">% of failed charges recovered through a different method or amount.</div></div>
+</div>
+<div class="milestone-list">
+<div class="milestone-item"><span class="milestone-dot" style="background:var(--pink);"></span>Target: 40%+ payment conversion on positive-balance sessions</div>
+<div class="milestone-item"><span class="milestone-dot" style="background:var(--green);"></span>Target: 98%+ tokenization success</div>
+</div>
+</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">POST /payments/tokenize</span>
+<span class="pill p-client">POST /payments/charge</span>
+<span class="pill">PCI-safe capture</span>
+<span class="pill p-required">No raw card logging</span>
+</div>
+</div>
+</div>
+<div class="flow-step v-teal">
+<div class="step-spine">
+<div class="step-num">6</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Confirmation · Receipt · Commlog · Closeout</div>
+<div class="card-title">Confirm the Outcome and Leave a Clean Audit Trail</div>
+<div class="card-body">On success, the assistant confirms the amount paid, payment date, and reference ID. It then sends a receipt via SMS or email if permitted. Every interaction, whether successful or escalated, writes to the communication log so clinic staff can see what happened without playing detective.</div>
+<div class="script-box">
+<div class="script-label" style="color:var(--teal);">Canonical Confirmation Script</div>
+<div class="script-text">“You’re all set. Your payment of $142.50 was processed successfully today. Your confirmation number is 78945. I can also text you a receipt if you’d like.”</div>
+</div>
+<div class="decision-grid">
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--teal);">Receipt Options</div>
+<div class="decision-list">
+<div class="decision-item">SMS receipt when phone consent exists</div>
+<div class="decision-item">Email receipt when verified email exists</div>
+<div class="decision-item">No consent: verbal confirmation only</div>
+</div>
+</div>
+<div class="decision-box">
+<div class="decision-box-label" style="color:var(--purple);">Logging</div>
+<div class="decision-list">
+<div class="decision-item">POST commlog on every session</div>
+<div class="decision-item">Stamp outcome, channel, amount, escalation status</div>
+<div class="decision-item">Never store raw card details</div>
+</div>
+</div>
+</div>
+<div class="pill-row">
+<span class="pill p-client">POST /notifications/sms</span>
+<span class="pill p-client">POST /notifications/email</span>
+<span class="pill p-client">POST /commlogs</span>
+<span class="pill">Receipt opt-in respected</span>
+</div>
+</div>
+</div>
+<div class="section-title">Fallback and Human Handoff</div>
+<div class="loop-banner">When the system cannot verify identity, cannot retrieve trustworthy data, or cannot complete payment safely, the assistant exits automation cleanly and carries the context into a human handoff.</div>
+<div class="flow-step v-red">
+<div class="step-spine">
+<div class="step-num">7</div>
+<div class="step-line"></div>
+</div>
+<div class="step-card">
+<div class="card-tag">Escalation · Warm Transfer · Context Preservation</div>
+<div class="card-title">Hand Off Without Making the User Repeat Themselves</div>
+<div class="card-body">Escalation is not a failure of design. It is part of the design. When the assistant transfers to billing staff, it passes intent, verification status, attempted actions, and error context so the user does not have to retell the story from scratch. This is where automation either builds trust or shatters it.</div>
+<table class="table">
+<thead><tr><th>Trigger</th><th>Escalation Behavior</th><th>Payload Sent</th></tr></thead>
+<tbody>
+<tr><td class="strong">Repeated auth failure</td><td>Warm transfer to billing</td><td>Session ID, auth_fail, no PHI shown</td></tr>
+<tr><td class="strong">API unavailable</td><td>Warm transfer or callback</td><td>Intent, affected API, retry count</td></tr>
+<tr><td class="strong">Dispute / refund / fraud</td><td>Immediate human routing</td><td>High-risk tag, user utterance summary</td></tr>
+<tr><td class="strong">Payment failure x2</td><td>Offer agent or alternate follow-up</td><td>Charge code, amount, payment step reached</td></tr>
+</tbody>
+</table>
+<div class="callout c-tip">
+<span class="callout-icon">✓</span>
+<div class="callout-body"><strong>Handoff Standard:</strong> The assistant should summarize the transfer aloud in one sentence. Example: “I’m connecting you with billing and letting them know you were trying to make a payment but the transaction didn’t go through.” That one sentence saves a shocking amount of human patience.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sidebar">
+<div class="side-panel">
+<div class="side-panel-header">
+<div class="sph-dot" style="background:var(--red);"></div>
+<span class="sph-label">LLM Guardrails</span>
+</div>
+<div class="side-panel-body">
+<ul class="rules-list">
+<li class="rule-item r-stop"><strong>No fabricated balances:</strong> The assistant must never generate a dollar amount or due date without API confirmation.</li>
+<li class="rule-item r-stop"><strong>No clinical guidance:</strong> If the user shifts into medical advice, route away from billing and escalate appropriately.</li>
+<li class="rule-item r-rule"><strong>RAG for policy, API for transactions:</strong> FAQs may use retrieval. Billing facts may not.</li>
+<li class="rule-item r-warn"><strong>No account existence confirmation pre-auth:</strong> Friendly language must stay generic until identity is verified.</li>
+<li class="rule-item r-purple"><strong>Commlog every session:</strong> Every interaction writes back to the system for continuity and auditability.</li>
+</ul>
+</div>
+</div>
+<div class="side-panel">
+<div class="side-panel-header">
+<div class="sph-dot" style="background:var(--green);"></div>
+<span class="sph-label">Example API Map</span>
+</div>
+<div class="side-panel-body">
+<ul class="api-list">
+<li class="api-item">
+<div class="api-name">OAuth Token</div>
+<div class="api-method">POST /oauth/token</div>
+<div class="api-desc">Acquire bearer token for downstream billing and notification services.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Patient Lookup</div>
+<div class="api-method">GET /patients?phone={ANI}</div>
+<div class="api-desc">Attempt pre-auth identity resolution using ANI or known channel identifier.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Identity Verification</div>
+<div class="api-method">POST /auth/verify</div>
+<div class="api-desc">Validate DOB or alternate identifier before exposing any billing data.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Balance Retrieval</div>
+<div class="api-method">GET /billing/balance?patientId=</div>
+<div class="api-desc">Return total due, due date, delinquency flags, and payment-plan eligibility.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Payment Tokenization</div>
+<div class="api-method">POST /payments/tokenize</div>
+<div class="api-desc">Convert payment method to a secure token; never store raw details in transcript.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Charge Payment</div>
+<div class="api-method">POST /payments/charge</div>
+<div class="api-desc">Execute the transaction using the secure token and approved amount.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Receipt Notification</div>
+<div class="api-method">POST /notifications/sms</div>
+<div class="api-desc">Send confirmation when consent and channel settings allow it.</div>
+</li>
+<li class="api-item">
+<div class="api-name">Communication Log</div>
+<div class="api-method">POST /commlogs</div>
+<div class="api-desc">Persist outcomes, escalation reasons, and interaction metadata for staff continuity.</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="side-panel" style="border-color:rgba(251,146,60,0.4);">
+<div class="side-panel-header" style="border-bottom-color:rgba(251,146,60,0.3);">
+<div class="sph-dot" style="background:var(--orange);"></div>
+<span class="sph-label" style="color:var(--orange);">Open Items — Confirm Before Build</span>
+</div>
+<div class="side-panel-body">
+<div class="open-items-list">
+<div class="open-item oi-crit">
+<div class="open-item-priority">Critical — Blocks Payment Flow</div>
+<div class="open-item-text"><strong>Fee Policy:</strong> Confirm whether card, ACH, or channel convenience fees apply and whether they differ by payment amount or payer segment.</div>
+</div>
+<div class="open-item oi-crit">
+<div class="open-item-priority">Critical — Blocks Go-Live</div>
+<div class="open-item-text"><strong>Payment Gateway Credentials:</strong> Tokenization and charge endpoints must be provisioned and tested in non-prod and prod environments.</div>
+</div>
+<div class="open-item oi-req">
+<div class="open-item-priority">Required — Policy Accuracy</div>
+<div class="open-item-text"><strong>Payment Plan Rules:</strong> Define minimum balance, eligibility flags, installment options, and when a human is required to finalize arrangements.</div>
+</div>
+<div class="open-item oi-req">
+<div class="open-item-priority">Required — Channel Logic</div>
+<div class="open-item-text"><strong>Receipt Preferences:</strong> Confirm whether SMS, email, or both can be offered by default and how opt-in / opt-out is stored.</div>
+</div>
+<div class="open-item oi-need">
+<div class="open-item-priority">Needed — Experience Tuning</div>
+<div class="open-item-text"><strong>Voice Tone Standard:</strong> Confirm whether HelixCare wants warmer concierge language or leaner utilitarian prompts for billing interactions.</div>
+</div>
+<div class="open-item oi-need">
+<div class="open-item-priority">Needed — Analytics</div>
+<div class="open-item-text"><strong>Revenue Attribution:</strong> Confirm whether completed AI payments should be attributed to containment, collections recovery, or overall digital self-service revenue.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="side-panel">
+<div class="side-panel-header">
+<div class="sph-dot" style="background:var(--cyan);"></div>
+<span class="sph-label">Success Metrics</span>
+</div>
+<div class="side-panel-body">
+<ul class="rules-list">
+<li class="rule-item r-tip"><strong>Containment:</strong> 65%+ of balance and simple payment requests resolved without human intervention.</li>
+<li class="rule-item r-rule"><strong>Call Deflection:</strong> 30% reduction in billing-related live call volume.</li>
+<li class="rule-item r-purple"><strong>Collections Lift:</strong> 15–20% increase in self-service payments over baseline.</li>
+<li class="rule-item r-warn"><strong>Average Resolution Time:</strong> &lt; 2 minutes for balance-only flows; &lt; 4 minutes for successful payment flows.</li>
+<li class="rule-item r-stop"><strong>Hallucination Rate:</strong> &lt; 2% for policy answers and 0% tolerated for transactional data.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
