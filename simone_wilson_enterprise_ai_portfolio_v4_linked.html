@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simone Wilson — Enterprise AI Product & Transformation Leader</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --cream:#F7F3EE;
+  --cream2:#EFE8DC;
+  --bone:#E6DDD0;
+  --paper:#FFFDF8;
+  --ink:#171412;
+  --ink2:#27211D;
+  --ink3:#3A322D;
+  --muted:#776B61;
+  --muted2:#9E9287;
+  --gold:#B8924A;
+  --gold2:#D4AE72;
+  --gold3:#8A6A30;
+  --teal:#2A8C8C;
+  --teal2:#DDEEEE;
+  --rule:rgba(23,20,18,.12);
+  --goldRule:rgba(184,146,74,.30);
+  --shadow:0 28px 70px rgba(23,20,18,.08);
+  --shadow2:0 16px 42px rgba(23,20,18,.12);
+  --serif:'Cormorant Garamond', Georgia, serif;
+  --sans:'Inter', system-ui, sans-serif;
+  --mono:'JetBrains Mono', monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+a{color:inherit}
+::selection{background:rgba(184,146,74,.26)}
+.noise{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999;
+  opacity:.18;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.26'/%3E%3C/svg%3E");
+}
+.grid-bg{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(184,146,74,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,146,74,.08) 1px, transparent 1px);
+  background-size:54px 54px;
+  mask-image:radial-gradient(circle at 65% 30%, black 0%, rgba(0,0,0,.5) 42%, transparent 75%);
+  opacity:.65;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:900;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 5.5vw;
+  border-bottom:1px solid rgba(184,146,74,.18);
+  background:rgba(247,243,238,.83);
+  backdrop-filter:blur(22px);
+}
+.brand{
+  font-family:var(--serif);
+  font-size:25px;
+  font-weight:600;
+  letter-spacing:-.02em;
+}
+.brand span{color:var(--gold)}
+.navlinks{
+  display:flex;
+  gap:28px;
+  align-items:center;
+}
+.navlinks a{
+  font-family:var(--mono);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  text-decoration:none;
+  color:var(--muted);
+  transition:color .25s;
+}
+.navlinks a:hover{color:var(--ink)}
+.nav-cta{
+  background:var(--ink);
+  color:var(--paper)!important;
+  padding:10px 17px;
+  border-radius:999px;
+}
+
+/* GLOBAL */
+section{
+  position:relative;
+  padding:112px 5.5vw;
+}
+.section-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--gold3);
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:20px;
+}
+.section-label:before{
+  content:"";
+  width:38px;
+  height:1px;
+  background:var(--gold);
+}
+h1,h2,h3{
+  font-family:var(--serif);
+  font-weight:500;
+  line-height:.98;
+  letter-spacing:-.035em;
+}
+h2{
+  font-size:clamp(44px,5.7vw,86px);
+  margin-bottom:24px;
+}
+.lede{
+  max-width:760px;
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.9;
+}
+.gold{color:var(--gold3)}
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .9s var(--ease), transform .9s var(--ease);
+}
+.reveal.in{
+  opacity:1;
+  transform:none;
+}
+.d1{transition-delay:.08s}
+.d2{transition-delay:.16s}
+.d3{transition-delay:.24s}
+.d4{transition-delay:.32s}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(360px,.72fr);
+  gap:64px;
+  align-items:center;
+  padding-top:150px;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(184,146,74,.13), transparent 32%),
+    linear-gradient(135deg, var(--cream) 0%, var(--paper) 48%, var(--cream2) 100%);
+  overflow:hidden;
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:560px;
+  height:560px;
+  right:-160px;
+  top:160px;
+  border:1px solid rgba(184,146,74,.22);
+  border-radius:50%;
+  opacity:.9;
+}
+.hero-copy{position:relative;z-index:3}
+.eyebrow{
+  font-family:var(--mono);
+  color:var(--gold3);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  font-size:11px;
+  margin-bottom:26px;
+}
+.hero h1{
+  font-size:clamp(62px,8.2vw,132px);
+  max-width:930px;
+}
+.hero h1 em{
+  font-style:normal;
+  color:var(--gold3);
+}
+.hero-summary{
+  max-width:720px;
+  margin-top:34px;
+  color:var(--ink3);
+  font-size:18px;
+  line-height:1.9;
+}
+.hero-summary strong{color:var(--ink)}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-top:38px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:0 24px;
+  border-radius:999px;
+  text-decoration:none;
+  font-family:var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:11px;
+  transition:transform .25s, box-shadow .25s, background .25s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{
+  background:var(--gold);
+  color:var(--ink);
+  box-shadow:0 16px 28px rgba(184,146,74,.22);
+}
+.btn-secondary{
+  border:1px solid rgba(23,20,18,.22);
+  color:var(--ink);
+  background:rgba(255,253,248,.45);
+}
+.kpi-panel{
+  position:relative;
+  z-index:3;
+  background:rgba(255,253,248,.76);
+  border:1px solid rgba(184,146,74,.24);
+  box-shadow:var(--shadow);
+  padding:32px;
+  backdrop-filter:blur(18px);
+}
+.panel-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gold3);
+  margin-bottom:18px;
+}
+.kpi{
+  display:grid;
+  grid-template-columns:112px 1fr;
+  gap:18px;
+  padding:20px 0;
+  border-bottom:1px solid rgba(23,20,18,.10);
+}
+.kpi:last-child{border-bottom:0}
+.kpi-value{
+  font-family:var(--serif);
+  font-size:44px;
+  line-height:1;
+  color:var(--gold3);
+  letter-spacing:-.04em;
+}
+.kpi-label{
+  color:var(--muted);
+  font-size:13px;
+  align-self:center;
+}
+.hero-note{
+  margin-top:22px;
+  padding-top:22px;
+  border-top:1px solid rgba(184,146,74,.22);
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* OWN */
+.own{
+  background:var(--paper);
+}
+.own-grid{
+  display:grid;
+  grid-template-columns:.78fr 1fr;
+  gap:60px;
+  align-items:center;
+}
+.system-map{
+  position:relative;
+  min-height:0;
+  border:1px solid var(--goldRule);
+  background:
+    radial-gradient(circle at 50% 44%, rgba(184,146,74,.10), transparent 38%),
+    linear-gradient(135deg, rgba(247,243,238,.92), rgba(255,253,248,.72));
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  padding:34px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.system-map:before{
+  content:"";
+  position:absolute;
+  inset:28px;
+  border:1px solid rgba(184,146,74,.15);
+  pointer-events:none;
+}
+.system-map:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(184,146,74,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,146,74,.055) 1px, transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(circle at 50% 45%, black 0%, rgba(0,0,0,.45) 44%, transparent 80%);
+  pointer-events:none;
+}
+.center-node{
+  grid-column:1/-1;
+  position:relative;
+  transform:none;
+  width:100%;
+  min-height:116px;
+  border-radius:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--serif);
+  font-size:38px;
+  line-height:1.02;
+  padding:28px;
+  z-index:2;
+  box-shadow:var(--shadow2);
+}
+.node{
+  position:relative;
+  z-index:3;
+  width:auto;
+  min-height:150px;
+  padding:22px 22px 20px;
+  background:rgba(255,253,248,.94);
+  border:1px solid rgba(184,146,74,.28);
+  box-shadow:0 12px 34px rgba(23,20,18,.05);
+  transition:transform .25s, border-color .25s, background .25s;
+}
+.node:hover{
+  transform:translateY(-4px);
+  border-color:var(--gold);
+  background:var(--paper);
+}
+.node h4{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--gold3);
+  margin-bottom:12px;
+}
+.node p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.62;
+}
+.n1,.n2,.n3,.n4,.n5,.n6{top:auto;right:auto;bottom:auto;left:auto;transform:none}
+.n1:hover,.n6:hover{transform:translateY(-4px)}
+.cap-list{
+  display:grid;
+  gap:12px;
+  margin-top:34px;
+}
+.cap-item{
+  padding:18px 20px;
+  border:1px solid rgba(184,146,74,.24);
+  background:rgba(255,253,248,.6);
+}
+.cap-item strong{
+  display:block;
+  margin-bottom:5px;
+  color:var(--ink);
+}
+.cap-item span{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* POV */
+.pov{
+  background:var(--ink);
+  color:var(--paper);
+  overflow:hidden;
+}
+.pov .grid-bg{opacity:.25;filter:invert(1)}
+.pov .section-label,
+.pov .gold{color:var(--gold2)}
+.pov h2{max-width:900px}
+.principles{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  margin-top:58px;
+  border:1px solid rgba(184,146,74,.18);
+  background:rgba(184,146,74,.18);
+}
+.principle{
+  background:#1E1A17;
+  min-height:360px;
+  padding:34px 28px;
+}
+.principle .num{
+  font-family:var(--mono);
+  color:var(--gold2);
+  font-size:11px;
+  margin-bottom:38px;
+}
+.principle h3{
+  font-size:35px;
+  line-height:1.03;
+  margin-bottom:24px;
+}
+.principle p{
+  color:rgba(247,243,238,.62);
+  font-size:14.5px;
+}
+
+/* FRAMEWORK */
+.framework{
+  background:linear-gradient(180deg,var(--cream) 0%, var(--paper) 100%);
+}
+.layers{
+  margin-top:50px;
+  display:grid;
+  gap:8px;
+}
+.layer{
+  display:grid;
+  grid-template-columns:110px 1fr 1.1fr;
+  gap:28px;
+  align-items:center;
+  padding:26px 30px;
+  background:rgba(255,253,248,.75);
+  border:1px solid rgba(184,146,74,.23);
+  box-shadow:0 12px 28px rgba(23,20,18,.035);
+  transition:transform .25s, background .25s, border-color .25s;
+}
+.layer:hover{
+  transform:translateX(8px);
+  background:var(--paper);
+  border-color:var(--gold);
+}
+.layer-num{
+  font-family:var(--serif);
+  font-size:44px;
+  color:var(--gold3);
+  letter-spacing:-.04em;
+}
+.layer-title{
+  font-family:var(--serif);
+  font-size:32px;
+  line-height:1.05;
+}
+.layer-copy{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* PROGRAMS */
+.programs{
+  background:var(--bone);
+}
+.program{
+  display:grid;
+  grid-template-columns:1fr .9fr;
+  gap:0;
+  margin-top:34px;
+  background:var(--paper);
+  border:1px solid rgba(184,146,74,.26);
+  box-shadow:var(--shadow);
+  min-height:640px;
+}
+.program:nth-of-type(even){
+  grid-template-columns:.9fr 1fr;
+}
+.program:nth-of-type(even) .program-copy{order:2}
+.program:nth-of-type(even) .program-visual{order:1;border-left:0;border-right:1px solid rgba(184,146,74,.18)}
+.program-copy{
+  padding:54px;
+}
+.program-kicker{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gold3);
+  margin-bottom:14px;
+}
+.program h3{
+  font-size:50px;
+  margin-bottom:24px;
+}
+.program-block{
+  margin-top:25px;
+}
+.program-block strong{
+  display:block;
+  font-family:var(--mono);
+  color:var(--ink);
+  font-size:11px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.program-block p,
+.program-block li{
+  color:var(--muted);
+  font-size:14.5px;
+}
+.program-block ul{
+  list-style:none;
+  display:grid;
+  gap:8px;
+}
+.program-block li:before{
+  content:"→";
+  color:var(--gold3);
+  margin-right:8px;
+}
+.program-visual{
+  border-left:1px solid rgba(184,146,74,.18);
+  background:
+    linear-gradient(135deg, rgba(247,243,238,.65), rgba(230,221,208,.8));
+  padding:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.flow-card{
+  width:min(100%,430px);
+}
+.flow-node{
+  background:rgba(255,253,248,.9);
+  border:1px solid rgba(184,146,74,.28);
+  padding:15px 18px;
+  margin:8px 0;
+  font-family:var(--mono);
+  color:var(--ink3);
+  font-size:12px;
+}
+.flow-node.dark{
+  background:var(--ink);
+  color:var(--paper);
+}
+.flow-node.gold{
+  border-color:var(--gold);
+  color:var(--gold3);
+  background:rgba(184,146,74,.10);
+}
+.arrow{
+  text-align:center;
+  color:var(--gold3);
+  font-family:var(--mono);
+}
+.dashboard{
+  width:min(100%,460px);
+  background:var(--ink);
+  color:var(--paper);
+  padding:28px;
+  box-shadow:var(--shadow2);
+}
+.dash-row{
+  display:grid;
+  grid-template-columns:110px 1fr 58px;
+  gap:14px;
+  align-items:center;
+  margin:17px 0;
+}
+.dash-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:rgba(247,243,238,.56);
+}
+.dash-track{
+  height:4px;
+  background:rgba(255,255,255,.13);
+  overflow:hidden;
+}
+.dash-fill{
+  height:100%;
+  background:var(--gold);
+}
+.dash-val{
+  font-family:var(--serif);
+  color:var(--gold2);
+  font-size:25px;
+}
+
+/* PRODUCT THINKING */
+.thinking{
+  background:var(--paper);
+}
+.think-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:48px;
+}
+.think-card{
+  min-height:250px;
+  background:var(--ink);
+  color:var(--paper);
+  padding:30px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s;
+}
+.think-card:hover{transform:translateY(-5px)}
+.think-card:after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:3px;
+  background:var(--gold);
+}
+.think-card h3{
+  font-size:32px;
+  margin-bottom:18px;
+}
+.think-card p{
+  color:rgba(247,243,238,.62);
+  font-size:14px;
+}
+.think-card .question{
+  font-family:var(--mono);
+  color:var(--gold2);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  margin-bottom:42px;
+}
+
+/* ARTIFACTS */
+.artifacts{
+  background:var(--cream);
+}
+.artifact-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  margin-top:48px;
+  border:1px solid rgba(184,146,74,.23);
+  background:rgba(184,146,74,.20);
+}
+.artifact-col{
+  background:rgba(255,253,248,.76);
+  padding:30px;
+}
+.artifact-col h3{
+  font-size:34px;
+  margin-bottom:24px;
+}
+.art-link{
+  display:block;
+  padding:17px 0;
+  border-bottom:1px solid rgba(23,20,18,.1);
+  text-decoration:none;
+}
+.art-link strong{
+  display:block;
+  font-size:14px;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+.art-link span{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.12em;
+  color:var(--gold3);
+  text-transform:uppercase;
+}
+
+
+.artifact-note{
+  margin-top:18px;
+  padding:18px 22px;
+  border:1px solid rgba(184,146,74,.24);
+  background:rgba(255,253,248,.72);
+  color:var(--muted);
+  font-size:14px;
+}
+.artifact-note strong{color:var(--ink)}
+.artifact-note code{
+  font-family:var(--mono);
+  color:var(--gold3);
+  background:rgba(184,146,74,.10);
+  padding:3px 6px;
+}
+
+/* WRITING */
+.writing{
+  background:var(--paper);
+}
+.article-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:46px;
+}
+.article{
+  text-decoration:none;
+  background:var(--cream);
+  border:1px solid rgba(184,146,74,.23);
+  padding:34px;
+  min-height:280px;
+  transition:transform .25s, border-color .25s;
+}
+.article:hover{
+  transform:translateY(-5px);
+  border-color:var(--gold);
+}
+.article .tag{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--gold3);
+  margin-bottom:44px;
+}
+.article h3{
+  font-size:34px;
+  margin-bottom:18px;
+}
+.article p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* WHY */
+.why{
+  background:var(--ink);
+  color:var(--paper);
+  text-align:center;
+  overflow:hidden;
+}
+.why h2{
+  max-width:960px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.why .lede{
+  margin-left:auto;
+  margin-right:auto;
+  color:rgba(247,243,238,.58);
+}
+.why-grid{
+  margin-top:54px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:rgba(184,146,74,.20);
+  border:1px solid rgba(184,146,74,.20);
+  text-align:left;
+}
+.why-card{
+  background:#1E1A17;
+  padding:28px;
+}
+.why-card strong{
+  display:block;
+  color:var(--gold2);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.why-card span{
+  color:rgba(247,243,238,.65);
+}
+
+/* CONTACT */
+.contact{
+  background:linear-gradient(180deg,var(--cream) 0%, var(--paper) 100%);
+  text-align:center;
+}
+.contact h2{
+  max-width:950px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.contact .lede{
+  margin-left:auto;
+  margin-right:auto;
+}
+.contact-links{
+  margin-top:38px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+}
+.footer{
+  padding:26px 5.5vw;
+  border-top:1px solid rgba(184,146,74,.18);
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .hero,.own-grid,.program,.program:nth-of-type(even){
+    grid-template-columns:1fr;
+  }
+  .program:nth-of-type(even) .program-copy,
+  .program:nth-of-type(even) .program-visual{order:initial}
+  .principles,.think-grid,.artifact-grid,.article-grid,.why-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .system-map{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  nav{padding:14px 22px}
+  .navlinks a:not(.nav-cta){display:none}
+  section{padding:82px 22px}
+  .hero{padding-top:120px}
+  .kpi{grid-template-columns:1fr}
+  .principles,.think-grid,.artifact-grid,.article-grid,.why-grid{
+    grid-template-columns:1fr;
+  }
+  .layer{grid-template-columns:1fr;gap:8px}
+  .program-copy,.program-visual{padding:30px 22px}
+  .program h3{font-size:38px}
+  .system-map{
+    padding:22px;
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .system-map:before,.system-map:after{display:none}
+  .center-node,.node{
+    width:100%;
+    height:auto;
+    min-height:auto;
+  }
+  .center-node{font-size:30px}
+  .footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+
+<body>
+<div class="noise"></div>
+
+<nav>
+  <div class="brand">Simone<span>.</span>Wilson</div>
+  <div class="navlinks">
+    <a href="#own">Scope</a>
+    <a href="#framework">Framework</a>
+    <a href="#programs">Programs</a>
+    <a href="#artifacts">Artifacts</a>
+    <a class="nav-cta" href="#contact">Let’s Talk</a>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="hero-copy reveal">
+    <div class="eyebrow">Enterprise AI Product & Transformation Leader</div>
+    <h1>I turn enterprise AI ambition into <em>operational reality.</em></h1>
+    <p class="hero-summary">
+      Senior AI Product Manager specializing in enterprise AI systems, conversational AI, workflow orchestration, and healthcare transformation programs. I bridge executive strategy, product ownership, AI architecture, and implementation delivery to help organizations deploy AI systems that actually work inside real business environments.
+    </p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#programs">View Transformation Programs</a>
+      <a class="btn btn-secondary" href="Simone_Wilson_Resume_2025.pdf" target="_blank">Download Executive Resume</a>
+      <a class="btn btn-secondary" href="#writing">Read AI Strategy Articles</a>
+    </div>
+  </div>
+
+  <aside class="kpi-panel reveal d2">
+    <div class="panel-label">Executive Proof Points</div>
+    <div class="kpi"><div class="kpi-value">10×</div><div class="kpi-label">Delivery throughput scaled across AI implementation workflows</div></div>
+    <div class="kpi"><div class="kpi-value">50%</div><div class="kpi-label">Implementation cycle reduction through reusable delivery systems</div></div>
+    <div class="kpi"><div class="kpi-value">8–12</div><div class="kpi-label">Concurrent enterprise healthcare AI deployments managed</div></div>
+    <div class="kpi"><div class="kpi-value">40–50</div><div class="kpi-label">Enterprise transformation engagements across healthcare, SaaS, biotech, and logistics</div></div>
+    <div class="kpi"><div class="kpi-value">$30M+</div><div class="kpi-label">Cumulative client budgets influenced through strategy and transformation work</div></div>
+    <p class="hero-note">Designed for Senior, Staff, Principal, and Director-level AI Product opportunities where AI must move from strategy deck to production reality.</p>
+  </aside>
+</section>
+
+<section class="own" id="own">
+  <div class="own-grid">
+    <div class="reveal">
+      <div class="section-label">What I Actually Own</div>
+      <h2>Enterprise AI requires more than product management.</h2>
+      <p class="lede">
+        Most AI initiatives fail because ownership is fragmented. My operating range spans discovery, workflow redesign, architecture, delivery governance, QA/UAT, adoption, and optimization.
+      </p>
+      <div class="cap-list">
+        <div class="cap-item"><strong>Executive-to-engineering translation</strong><span>I convert strategic ambiguity into product requirements, implementation plans, and AI system behavior.</span></div>
+        <div class="cap-item"><strong>Operational AI ownership</strong><span>I design for the messy middle: workflows, exceptions, integrations, compliance, handoffs, and real adoption.</span></div>
+        <div class="cap-item"><strong>Scale-ready delivery systems</strong><span>I build repeatable infrastructure so AI deployments do not depend on heroic one-off execution.</span></div>
+      </div>
+    </div>
+
+    <div class="system-map reveal d1">
+      <div class="center-node">Enterprise AI Transformation</div>
+      <div class="node n1"><h4>Product Strategy</h4><p>Opportunity framing, KPI definition, roadmap logic, and prioritization.</p></div>
+      <div class="node n2"><h4>AI Workflow Architecture</h4><p>Conversation flows, orchestration paths, escalation logic, and human-in-the-loop design.</p></div>
+      <div class="node n3"><h4>Delivery Operations</h4><p>Backlogs, sprint alignment, QA/UAT, rollout governance, and hypercare.</p></div>
+      <div class="node n4"><h4>AI Governance</h4><p>HIPAA-aware design, PII handling, OWASP discipline, and operational safeguards.</p></div>
+      <div class="node n5"><h4>Discovery & Requirements</h4><p>Workflow analysis, BRD/SOW translation, API mapping, and gap identification.</p></div>
+      <div class="node n6"><h4>Change Management</h4><p>Adoption enablement, team readiness, training, and optimization loops.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pov" id="pov">
+  <div class="grid-bg"></div>
+  <div class="section-label reveal">Executive Point of View</div>
+  <h2 class="reveal d1">My perspective on <span class="gold">enterprise AI.</span></h2>
+  <p class="lede reveal d2">The model is rarely the whole problem. The real challenge is operational alignment, workflow orchestration, trust, governance, and delivery discipline.</p>
+
+  <div class="principles">
+    <div class="principle reveal"><div class="num">01</div><h3>Most AI projects fail before implementation starts.</h3><p>Organizations often pursue tools before operational readiness, creating expensive theater instead of leverage.</p></div>
+    <div class="principle reveal d1"><div class="num">02</div><h3>AI adoption is a workflow problem first.</h3><p>The success of enterprise AI depends on process redesign, handoff clarity, and trust in the system.</p></div>
+    <div class="principle reveal d2"><div class="num">03</div><h3>AI must be designed around operational reality.</h3><p>The best systems do not ignore the existing business. They orchestrate it with less friction.</p></div>
+    <div class="principle reveal d3"><div class="num">04</div><h3>The future of AI is orchestration.</h3><p>The differentiator will be coordinating systems, teams, context, automation, and human judgment at scale.</p></div>
+  </div>
+</section>
+
+<section class="framework" id="framework">
+  <div class="section-label reveal">Signature Framework</div>
+  <h2 class="reveal d1">The Enterprise AI Readiness Framework<span class="gold">™</span></h2>
+  <p class="lede reveal d2">A practical maturity model for diagnosing why AI initiatives stall before ROI and what must be fixed before scale.</p>
+
+  <div class="layers">
+    <div class="layer reveal"><div class="layer-num">01</div><div class="layer-title">Executive Alignment</div><div class="layer-copy">Clarify ownership, priorities, investment thesis, and strategic direction before solution design begins.</div></div>
+    <div class="layer reveal d1"><div class="layer-num">02</div><div class="layer-title">Workflow Readiness</div><div class="layer-copy">Identify broken processes, undocumented exceptions, escalation paths, and operational friction points.</div></div>
+    <div class="layer reveal d2"><div class="layer-num">03</div><div class="layer-title">Data Accessibility</div><div class="layer-copy">Map system dependencies, integration limits, API gaps, and quality issues affecting AI behavior.</div></div>
+    <div class="layer reveal d3"><div class="layer-num">04</div><div class="layer-title">AI Governance</div><div class="layer-copy">Define safeguards, compliance requirements, PII handling, failure states, and escalation controls.</div></div>
+    <div class="layer reveal"><div class="layer-num">05</div><div class="layer-title">Human Adoption</div><div class="layer-copy">Design for trust, team readiness, workflow ownership, and human-in-the-loop collaboration.</div></div>
+    <div class="layer reveal d1"><div class="layer-num">06</div><div class="layer-title">Operationalization</div><div class="layer-copy">Build rollout governance, QA/UAT, delivery systems, training, and go-live discipline.</div></div>
+    <div class="layer reveal d2"><div class="layer-num">07</div><div class="layer-title">Continuous Optimization</div><div class="layer-copy">Create feedback loops, KPI dashboards, performance reviews, and iterative tuning mechanisms.</div></div>
+  </div>
+</section>
+
+<section class="programs" id="programs">
+  <div class="section-label reveal">Transformation Programs</div>
+  <h2 class="reveal d1">Proof of <span class="gold">operational AI leadership.</span></h2>
+  <p class="lede reveal d2">Selected programs demonstrating the ability to move AI from business problem to shipped system across complex enterprise environments.</p>
+
+  <article class="program reveal">
+    <div class="program-copy">
+      <div class="program-kicker">Program 01 · Healthcare AI</div>
+      <h3>Enterprise Healthcare Appointment Management Transformation</h3>
+      <div class="program-block"><strong>Business Problem</strong><p>Patients experienced routing inefficiencies, latency issues, verification friction, repetitive call experiences, and scheduling failures across fragmented EHR/PMS environments.</p></div>
+      <div class="program-block"><strong>Product Strategy</strong><p>Redesigned the appointment management experience around personalization, intelligent routing, workflow simplification, escalation clarity, and operational scalability.</p></div>
+      <div class="program-block"><strong>Delivery Leadership</strong><ul><li>Owned discovery workshops, workflow mapping, user stories, acceptance criteria, QA/UAT, sprint alignment, and hypercare.</li><li>Mapped IVA logic to Denticon, Dentrix Ascend, OpenDental, ModMed, and Axium dependencies.</li><li>Surfaced undocumented API limitations before engineering build cycles.</li></ul></div>
+    </div>
+    <div class="program-visual">
+      <div class="flow-card">
+        <div class="flow-node dark">Inbound Patient Call</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node">ANI Recognition + EHR/PMS Lookup</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node gold">HIPAA-Aware Verification Logic</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node">Intent Separation: Schedule · Reschedule · Cancel · Confirm</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node">Smart Routing + Escalation Pathways</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node dark">Confirmed Outcome + Hypercare Feedback Loop</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="program reveal">
+    <div class="program-copy">
+      <div class="program-kicker">Program 02 · Delivery Operating System</div>
+      <h3>Enterprise AI Implementation Operating System</h3>
+      <div class="program-block"><strong>Business Problem</strong><p>Healthcare AI implementations lacked standardization across onboarding, delivery governance, QA/UAT, rollout coordination, and operational tracking.</p></div>
+      <div class="program-block"><strong>What Was Built</strong><ul><li>Client Hub infrastructure and Jira epic frameworks.</li><li>Implementation templates, go-live governance models, and telephony configuration tracking.</li><li>Repeatable delivery playbooks for scalable execution across concurrent accounts.</li></ul></div>
+      <div class="program-block"><strong>Outcomes</strong><p>Scaled delivery throughput 10×, reduced implementation cycles by 50%, and standardized governance across 8–12 concurrent enterprise deployments.</p></div>
+    </div>
+    <div class="program-visual">
+      <div class="dashboard">
+        <div class="panel-label" style="color:var(--gold2)">Implementation OS Metrics</div>
+        <div class="dash-row"><div class="dash-label">Accounts</div><div class="dash-track"><div class="dash-fill" style="width:88%"></div></div><div class="dash-val">8–12</div></div>
+        <div class="dash-row"><div class="dash-label">Throughput</div><div class="dash-track"><div class="dash-fill" style="width:96%"></div></div><div class="dash-val">10×</div></div>
+        <div class="dash-row"><div class="dash-label">Cycle Cut</div><div class="dash-track"><div class="dash-fill" style="width:70%"></div></div><div class="dash-val">50%</div></div>
+        <div class="dash-row"><div class="dash-label">Ramp Time</div><div class="dash-track"><div class="dash-fill" style="width:62%"></div></div><div class="dash-val">↓</div></div>
+        <div style="margin-top:30px;font-family:var(--mono);font-size:10px;line-height:2;color:rgba(247,243,238,.58)">
+          → Client Hub dashboard<br>
+          → Jira epic-per-client model<br>
+          → QA/UAT governance<br>
+          → Credential hygiene<br>
+          → Go-live cohort tracking
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="program reveal">
+    <div class="program-copy">
+      <div class="program-kicker">Program 03 · Enterprise Transformation</div>
+      <h3>Management Consulting to AI Product Leadership</h3>
+      <div class="program-block"><strong>Business Problem</strong><p>Enterprise organizations needed help diagnosing systemic growth, product-market fit, GTM, and operational issues before transformation could succeed.</p></div>
+      <div class="program-block"><strong>Strategic Scope</strong><ul><li>Executed 40–50 engagements across SaaS, healthcare, biotech, and logistics.</li><li>Interviewed VP/Director-level stakeholders and mapped operational constraints.</li><li>Restructured positioning, pricing, GTM systems, and enablement programs.</li></ul></div>
+      <div class="program-block"><strong>AI Product Relevance</strong><p>This background is the bridge: executive diagnosis, workflow transformation, organizational alignment, and operational rollout all now applied to enterprise AI systems.</p></div>
+    </div>
+    <div class="program-visual">
+      <div class="flow-card">
+        <div class="flow-node dark">Executive Ambiguity</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node">Diagnostic Interviews + Workflow Analysis</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node gold">Product / Market / Operational Gap Mapping</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node">Transformation Roadmap + Enablement System</div>
+        <div class="arrow">↓</div>
+        <div class="flow-node dark">Measurable Business Outcomes</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="thinking" id="thinking">
+  <div class="section-label reveal">Product Thinking</div>
+  <h2 class="reveal d1">How I make <span class="gold">AI product decisions.</span></h2>
+  <p class="lede reveal d2">My product lens is designed for enterprise AI environments where the product is not just an interface. It is the coordination layer between people, systems, workflows, and risk.</p>
+
+  <div class="think-grid">
+    <div class="think-card reveal"><div class="question">Decision Lens</div><h3>Workflow Reduction</h3><p>Does this reduce operational friction, or are we automating a broken process?</p></div>
+    <div class="think-card reveal d1"><div class="question">Decision Lens</div><h3>Adoption Reality</h3><p>Will real teams actually use this system under real pressure?</p></div>
+    <div class="think-card reveal d2"><div class="question">Decision Lens</div><h3>Escalation Clarity</h3><p>What happens when the AI is uncertain, wrong, blocked, or unsafe to proceed?</p></div>
+    <div class="think-card reveal"><div class="question">Decision Lens</div><h3>System Scalability</h3><p>Can the solution scale operationally without fragile manual workarounds?</p></div>
+    <div class="think-card reveal d1"><div class="question">Decision Lens</div><h3>Human Trust</h3><p>Does the workflow preserve confidence, transparency, and user control?</p></div>
+    <div class="think-card reveal d2"><div class="question">Decision Lens</div><h3>Business Impact</h3><p>Does this measurably improve throughput, cost, customer experience, or decision velocity?</p></div>
+  </div>
+</section>
+
+<section class="artifacts" id="artifacts">
+  <div class="section-label reveal">Strategic Artifact Library</div>
+  <h2 class="reveal d1">The work behind <span class="gold">the work.</span></h2>
+  <p class="lede reveal d2">A focused artifact library with the core deliverables that demonstrate strategy, product thinking, systems architecture, delivery governance, and launch readiness.</p>
+
+  <div class="artifact-grid">
+    <div class="artifact-col reveal">
+      <h3>Strategy</h3>
+      <a class="art-link" href="https://simoneaipm.github.io/portfolio/ai_investment_memo.html" target="_blank"><strong>AI Investment Memo</strong><span>Executive Strategy · ROI · Risk · Adoption</span></a>
+      <a class="art-link" href="https://thinkfwdgrp.com/diagnostic" target="_blank"><strong>Enterprise AI Readiness Diagnostic</strong><span>Access Code: THINKFWD · Operational Readiness</span></a>
+    </div>
+    <div class="artifact-col reveal d1">
+      <h3>Product</h3>
+      <a class="art-link" href="https://docs.google.com/document/d/1rzTuUkKTfVVly53ILHktftB6aY12WOIF/edit?usp=sharing&ouid=109697632112158085482&rtpof=true&sd=true" target="_blank"><strong>Enterprise PRD</strong><span>LLM Product Requirements · User Needs · Success Metrics</span></a>
+      <a class="art-link" href="https://docs.google.com/document/d/12w85zQmYIrx7X4QZ63rN0q3XrQP5Ac6Y/edit?usp=sharing&ouid=109697632112158085482&rtpof=true&sd=true" target="_blank"><strong>User Stories & Acceptance Criteria</strong><span>Engineering Handoff · Prioritization · QA Logic</span></a>
+    </div>
+    <div class="artifact-col reveal d2">
+      <h3>Systems</h3>
+      <a class="art-link" href="https://simoneaipm.github.io/portfolio/denticon_level3_dfd_snappy_api_map.html" target="_blank"><strong>Level 3 Data Flow Diagram</strong><span>Denticon API Map · Architecture · Integration Risk</span></a>
+      <a class="art-link" href="https://simoneaipm.github.io/portfolio/appointment_management_iva_operating_framework_portfolio.html" target="_blank"><strong>Appointment Management IVA Design</strong><span>Workflow Orchestration · PMS Logic · Escalation</span></a>
+    </div>
+    <div class="artifact-col reveal d3">
+      <h3>Delivery</h3>
+      <a class="art-link" href="https://docs.google.com/document/d/1TQ2K_tng0e88JJ7NIjqJNgdUzinRLX84/edit?usp=sharing&ouid=109697632112158085482&rtpof=true&sd=true" target="_blank"><strong>Implementation Governance Model</strong><span>Delivery OS · Client Hub · Rollout Control</span></a>
+      <a class="art-link" href="https://docs.google.com/spreadsheets/d/1VwubxNyLvnW564iLpK5bZTi3cxv8uwc9/edit?usp=sharing&ouid=109697632112158085482&rtpof=true&sd=true" target="_blank"><strong>QA/UAT Framework</strong><span>Launch Readiness · Defect Tracking · Signoff</span></a>
+    </div>
+  </div>
+
+  <div class="artifact-note reveal d4">
+    <strong>Diagnostic Access:</strong> Use code <code>THINKFWD</code> for the Enterprise AI Readiness Diagnostic.
+  </div>
+</section>
+
+<section class="writing" id="writing">
+  <div class="section-label reveal">Thought Leadership</div>
+  <h2 class="reveal d1">What I’m writing <span class="gold">about.</span></h2>
+  <p class="lede reveal d2">Operator-level thinking on why AI initiatives stall, what organizations miss, and how to make AI useful inside real business systems.</p>
+
+  <div class="article-grid">
+    <a class="article reveal" href="https://www.linkedin.com/pulse/ai-readiness-theater-everybodys-doing-nobodys-getting-yunche-wilson-nojpc/" target="_blank">
+      <div class="tag">Enterprise AI · 8 min</div>
+      <h3>AI Readiness Theater</h3>
+      <p>Why organizations are investing in AI without fixing the operational conditions required for ROI.</p>
+    </a>
+    <a class="article reveal d1" href="https://www.linkedin.com/pulse/ai-agent-trap-why-mid-market-companies-automating-wrong-yunche-wilson-aecxe/" target="_blank">
+      <div class="tag">Agentic AI · 7 min</div>
+      <h3>The AI Agent Trap</h3>
+      <p>Why companies automate workflows that should be redesigned before they are delegated to AI.</p>
+    </a>
+    <a class="article reveal d2" href="https://thinkfwdgrp.com/five_gaps_landing" target="_blank">
+      <div class="tag">AI Strategy · Guide</div>
+      <h3>Five Gaps That Stall Every AI Project</h3>
+      <p>A diagnostic guide for leadership teams evaluating AI investments before they spend another dollar.</p>
+    </a>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="grid-bg"></div>
+  <div class="section-label reveal" style="justify-content:center">Why Companies Bring Me In</div>
+  <h2 class="reveal d1">I bridge executive strategy and implementation reality.</h2>
+  <p class="lede reveal d2">The future of enterprise AI belongs to organizations that can operationalize intelligence at scale. That requires product leadership, workflow orchestration, operational alignment, and transformation execution.</p>
+
+  <div class="why-grid">
+    <div class="why-card reveal"><strong>Translate Ambiguity</strong><span>Turn vague AI ambition into clear requirements, workflows, and execution plans.</span></div>
+    <div class="why-card reveal d1"><strong>Align Stakeholders</strong><span>Connect executives, operations, engineering, compliance, and customer experience teams.</span></div>
+    <div class="why-card reveal d2"><strong>Reduce Failure Risk</strong><span>Identify readiness gaps before they become budget-draining implementation problems.</span></div>
+    <div class="why-card reveal"><strong>Operationalize AI</strong><span>Design systems that fit actual workflows, data realities, and human behavior.</span></div>
+    <div class="why-card reveal d1"><strong>Scale Delivery</strong><span>Create repeatable operating systems for implementation governance and rollout.</span></div>
+    <div class="why-card reveal d2"><strong>Optimize Post-Launch</strong><span>Build feedback loops that improve performance after the first deployment.</span></div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-label reveal" style="justify-content:center">Executive Close</div>
+  <h2 class="reveal d1">Open to Senior & Principal AI Product Leadership Opportunities.</h2>
+  <p class="lede reveal d2">Particularly interested in enterprise AI transformation, conversational AI systems, workflow orchestration, healthcare AI, AI operational strategy, and agentic workflow systems.</p>
+  <div class="contact-links reveal d3">
+    <a class="btn btn-primary" href="mailto:simonewrites40@gmail.com">simonewrites40@gmail.com</a>
+    <a class="btn btn-secondary" href="https://www.linkedin.com/in/yunchewilson/" target="_blank">LinkedIn</a>
+    <a class="btn btn-secondary" href="Simone_Wilson_Resume_2025.pdf" target="_blank">Download Resume</a>
+    <a class="btn btn-secondary" href="#top">Back to Top</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div>© 2026 Simone Wilson</div>
+  <div>Enterprise AI Product · Healthcare AI · Workflow Orchestration</div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+    }
+  });
+},{threshold:.12, rootMargin:"0px 0px -40px 0px"});
+
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
