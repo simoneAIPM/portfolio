@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Denticon API Level 3 DFD — Appointment Management IVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F7F3EE;--paper:#FFFDF8;--bone:#E8DED0;--ink:#171412;--ink2:#29231F;--muted:#75695F;--gold:#B8924A;--gold2:#D4AE72;--gold3:#8A6A30;--green:#61705A;--red:#8D564C;--blue:#4F6472;--rule:rgba(184,146,74,.28);--softRule:rgba(23,20,18,.10);--shadow:0 24px 70px rgba(23,20,18,.08);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.55}
+.shell{max-width:1240px;margin:0 auto;padding:42px 24px 72px}
+.print-btn{position:fixed;right:22px;bottom:22px;z-index:1000;background:var(--gold);color:var(--ink);border:none;border-radius:999px;padding:13px 18px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;box-shadow:0 14px 32px rgba(23,20,18,.16)}
+.hero{background:radial-gradient(circle at 18% 10%,rgba(184,146,74,.16),transparent 30%),linear-gradient(135deg,var(--paper),var(--bone));border:1px solid var(--rule);box-shadow:var(--shadow);padding:44px;display:grid;grid-template-columns:1.2fr .8fr;gap:34px}
+.kicker{font-family:var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold3);font-size:11px;font-weight:600;margin-bottom:18px}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1;letter-spacing:-.035em;font-weight:600}
+h1{font-size:clamp(48px,6vw,84px);max-width:780px}
+h1 span{color:var(--gold3)}
+.hero p{color:var(--muted);font-size:17px;line-height:1.75;max-width:780px;margin-top:22px}
+.meta{border:1px solid var(--rule);background:rgba(255,253,248,.78);padding:24px}
+.meta-row{padding:12px 0;border-bottom:1px solid var(--softRule)}
+.meta-row:last-child{border-bottom:none}
+.label{font-family:var(--mono);color:var(--gold3);text-transform:uppercase;letter-spacing:.14em;font-size:9px;margin-bottom:4px}
+.value{color:var(--ink2);font-weight:700;font-size:14px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.badge{display:inline-flex;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;font-size:9px;padding:7px 9px;border:1px solid rgba(184,146,74,.28);color:var(--gold3);background:rgba(184,146,74,.08)}
+section{background:var(--paper);border:1px solid var(--rule);box-shadow:0 14px 40px rgba(23,20,18,.045);margin-top:24px;padding:34px}
+.section-head{display:flex;justify-content:space-between;gap:24px;align-items:end;padding-bottom:22px;border-bottom:1px solid var(--softRule);margin-bottom:24px}
+h2{font-size:44px}.section-note{color:var(--muted);font-size:14px;max-width:520px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid rgba(184,146,74,.22);background:linear-gradient(135deg,rgba(247,243,238,.72),rgba(255,253,248,.88));padding:20px}
+.card.dark{background:var(--ink);color:var(--paper)}
+.card h3{font-size:27px;margin-bottom:12px}.card p,.card li{color:var(--muted);font-size:14px}.card.dark p,.card.dark li{color:rgba(247,243,238,.65)}.card.dark h3{color:var(--gold2)}
+ul{list-style:none;display:grid;gap:8px}li:before{content:"→";color:var(--gold3);margin-right:7px}
+.diagram{background:linear-gradient(rgba(184,146,74,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(184,146,74,.06) 1px,transparent 1px),linear-gradient(135deg,rgba(247,243,238,.92),rgba(255,253,248,.82));background-size:42px 42px,42px 42px,auto;border:1px solid rgba(184,146,74,.28);padding:24px;overflow:auto}
+.flow{min-width:1040px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;align-items:start}
+.lane{border:1px solid rgba(184,146,74,.22);background:rgba(255,253,248,.78);padding:14px;min-height:540px}
+.lane-title{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold3);padding-bottom:11px;border-bottom:1px solid var(--softRule);margin-bottom:14px}
+.node{border:1px solid rgba(184,146,74,.25);background:var(--paper);padding:13px;margin-bottom:10px}.node.dark{background:var(--ink);color:var(--paper)}.node.gold{background:rgba(184,146,74,.10)}.node.green{background:rgba(97,112,90,.10);border-color:rgba(97,112,90,.32)}.node.blue{background:rgba(79,100,114,.10);border-color:rgba(79,100,114,.32)}.node.red{background:rgba(141,86,76,.10);border-color:rgba(141,86,76,.32)}
+.node h4{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);line-height:1.3;margin-bottom:6px}.node.dark h4{color:var(--gold2)}
+.node p{color:var(--muted);font-size:12.5px;line-height:1.45}.node.dark p{color:rgba(247,243,238,.62)}.arrow{text-align:center;font-family:var(--mono);color:var(--gold3);margin:-2px 0 8px}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;font-size:10px;color:var(--gold3);background:rgba(184,146,74,.10)}
+td,th{padding:13px 12px;border:1px solid rgba(184,146,74,.22);vertical-align:top}td{color:var(--muted);font-size:13px;background:rgba(255,253,248,.66)}
+.code{font-family:var(--mono);color:var(--ink2);font-size:12px;white-space:nowrap}.method{display:inline-flex;min-width:54px;justify-content:center;padding:3px 6px;border-radius:999px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--paper);background:var(--ink);margin-right:6px}.get{background:var(--blue)}.post{background:var(--green)}.patch{background:var(--gold3)}
+.callout{margin-top:18px;padding:22px;border-left:4px solid var(--gold);background:rgba(184,146,74,.08)}.callout strong{display:block;font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--gold3);font-size:10px;margin-bottom:8px}.callout p{color:var(--ink2);font-size:15px}
+.footer{margin-top:24px;text-align:center;color:var(--muted);font-size:13px;padding:24px}.footer strong{color:var(--ink)}
+@media print{body{background:white}.shell{max-width:none;padding:0}.print-btn{display:none}.hero,section{box-shadow:none;break-inside:avoid;margin-top:14px}}
+@media(max-width:900px){.hero,.grid-3{grid-template-columns:1fr}.hero,section{padding:26px}.section-head{display:block}.section-note{margin-top:12px}}
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+<main class="shell">
+<header class="hero">
+  <div>
+    <div class="kicker">Systems Artifact · Level 3 DFD</div>
+    <h1>Denticon API Appointment Management <span>IVA</span></h1>
+    <p>A compact, scan-friendly Level 3 data flow diagram showing how an AI appointment-management assistant moves data between the patient, IVA orchestration layer, Denticon API domains, and operational systems.</p>
+    <div class="badge-row">
+      <span class="badge">Patient Lookup</span><span class="badge">Availability Search</span><span class="badge">Book / Confirm / Cancel</span><span class="badge">Escalation</span><span class="badge">Audit Logging</span>
+    </div>
+  </div>
+  <aside class="meta">
+    <div class="meta-row"><div class="label">System</div><div class="value">Denticon by Planet DDS</div></div>
+    <div class="meta-row"><div class="label">Use Case</div><div class="value">Schedule · Reschedule · Confirm · Cancel</div></div>
+    <div class="meta-row"><div class="label">Diagram Type</div><div class="value">Level 3 DFD + API Call Map</div></div>
+    <div class="meta-row"><div class="label">Prepared By</div><div class="value">Simone Wilson</div></div>
+    <div class="meta-row"><div class="label">Note</div><div class="value">API operations are sample operation labels to validate against live Swagger.</div></div>
+  </aside>
+</header>
+
+<section>
+  <div class="section-head"><h2>Architecture Snapshot</h2><p class="section-note">What this proves: API solutioning, workflow orchestration, HIPAA-aware data handling, writeback control, and safe fallback design.</p></div>
+  <div class="grid-3">
+    <div class="card"><h3>Goal</h3><p>Allow verified patients to schedule, reschedule, confirm, or cancel appointments without exposing patient-specific data before identity verification.</p></div>
+    <div class="card"><h3>Denticon Domains</h3><ul><li>Patients API</li><li>Appointments API</li><li>Practices API</li><li>Subscriptions / Webhooks</li></ul></div>
+    <div class="card dark"><h3>Non-Negotiable</h3><p>The IVA never invents appointment availability, patient identity, provider data, or appointment status. It retrieves, verifies, writes back only after confirmation, or escalates.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Level 3 Diagram</h2><p class="section-note">Four swimlanes. One readable system story: caller intent → verification → Denticon API action → logged outcome.</p></div>
+  <div class="diagram"><div class="flow">
+    <div class="lane">
+      <div class="lane-title">1 · Patient + Channel</div>
+      <div class="node dark"><h4>Patient / Caller</h4><p>Provides intent, identity details, preferences, confirmation, or cancellation reason.</p></div><div class="arrow">↓</div>
+      <div class="node"><h4>Voice / Chat Channel</h4><p>Captures ANI, transcript, session ID, timestamp, and channel source.</p></div><div class="arrow">↓</div>
+      <div class="node gold"><h4>IVA Conversation Layer</h4><p>Detects intent, asks approved verification questions, presents options, and confirms selection.</p></div>
+    </div>
+    <div class="lane">
+      <div class="lane-title">2 · AI Orchestration</div>
+      <div class="node"><h4>Intent Classifier</h4><p>Schedule, reschedule, confirm, cancel, appointment lookup, or live-agent request.</p></div><div class="arrow">↓</div>
+      <div class="node green"><h4>Identity Gate</h4><p>Blocks patient-specific appointment details until verification passes.</p></div><div class="arrow">↓</div>
+      <div class="node"><h4>Appointment Orchestrator</h4><p>Selects correct API workflow and applies business rules before writeback.</p></div><div class="arrow">↓</div>
+      <div class="node blue"><h4>Policy + Rules Engine</h4><p>Office rules, cancellation windows, provider constraints, and escalation triggers.</p></div>
+    </div>
+    <div class="lane">
+      <div class="lane-title">3 · Denticon API Layer</div>
+      <div class="node gold"><h4>Patients API</h4><p>Patient match, demographic context, identity support.</p></div><div class="arrow">↓↑</div>
+      <div class="node gold"><h4>Practices API</h4><p>Locations, providers, production types, appointment metadata.</p></div><div class="arrow">↓↑</div>
+      <div class="node gold"><h4>Appointments API</h4><p>Availability, appointment lookup, booking, confirmation, cancellation.</p></div><div class="arrow">↓↑</div>
+      <div class="node"><h4>Subscriptions / Webhooks</h4><p>Real-time appointment or patient update events.</p></div>
+    </div>
+    <div class="lane">
+      <div class="lane-title">4 · Outcomes + Controls</div>
+      <div class="node"><h4>Session Store</h4><p>Short-lived session state, verification status, selected workflow path.</p></div><div class="arrow">↓</div>
+      <div class="node"><h4>Audit Log</h4><p>Intent, verification result, API status, writeback outcome, escalation reason.</p></div><div class="arrow">↓</div>
+      <div class="node red"><h4>Escalation Ticket</h4><p>Routes failed verification, no availability, policy exceptions, or low confidence.</p></div><div class="arrow">↓</div>
+      <div class="node green"><h4>Confirmed Outcome</h4><p>Booked, confirmed, cancelled, rescheduled, or safely routed to staff.</p></div>
+    </div>
+  </div></div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Sample API Call Map</h2><p class="section-note">These are implementation-style operation labels based on Denticon’s public API capability areas. Exact endpoint paths, payloads, auth scopes, and response codes should be validated in live Swagger.</p></div>
+  <table>
+    <thead><tr><th>Workflow Step</th><th>Sample API Operation</th><th>Data Used</th><th>IVA Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Patient lookup</td><td class="code"><span class="method get">GET</span>/patients/search</td><td>ANI, DOB, last name, ZIP, patient ID where approved</td><td>Find patient match; if no/multiple match, ask approved clarifier or escalate.</td></tr>
+      <tr><td>Practice metadata</td><td class="code"><span class="method get">GET</span>/practices/{practiceId}/providers</td><td>Practice ID, location ID, provider ID, production type</td><td>Show only valid provider/location options.</td></tr>
+      <tr><td>Availability search</td><td class="code"><span class="method get">GET</span>/appointments/availability</td><td>Location, provider, appointment type, preferred date/time</td><td>Present returned slots only. Never invent availability.</td></tr>
+      <tr><td>Book appointment</td><td class="code"><span class="method post">POST</span>/appointments</td><td>Patient ID, slot ID, provider, location, appointment type</td><td>Write back only after explicit patient confirmation.</td></tr>
+      <tr><td>Confirm appointment</td><td class="code"><span class="method patch">PATCH</span>/appointments/{appointmentId}/confirm</td><td>Appointment ID, patient ID, confirmation status</td><td>Confirm status and log outcome.</td></tr>
+      <tr><td>Cancel appointment</td><td class="code"><span class="method post">POST</span>/appointments/{appointmentId}/cancel</td><td>Appointment ID, patient ID, cancellation reason, policy flag</td><td>Apply cancellation rules; escalate if fee/window policy requires review.</td></tr>
+      <tr><td>Real-time update</td><td class="code"><span class="method post">POST</span>/webhooks/appointments</td><td>Appointment event, status change, timestamp, event ID</td><td>Validate event source, update session/reporting, prevent duplicate processing.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Credibility Note</strong><p>Denticon’s public developer portal describes API categories and appointment capabilities, including availability, booking, confirmation, and cancellation. The exact endpoint syntax above is presented as a realistic implementation map and should be reconciled with Denticon’s live Swagger before engineering build.</p></div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Controls, Fallbacks & Dev Flags</h2><p class="section-note">The lightweight version still shows the senior thing: what happens when the happy path snaps.</p></div>
+  <div class="grid-3">
+    <div class="card"><h3>Security Controls</h3><ul><li>Verify before disclosure.</li><li>Minimize PHI in logs.</li><li>Validate webhook source.</li><li>Require explicit confirmation before writeback.</li><li>Audit every API call and outcome.</li></ul></div>
+    <div class="card"><h3>Fallback Rules</h3><ul><li>No patient match → clarify or escalate.</li><li>Multiple matches → no disclosure; escalate if unresolved.</li><li>No availability → alternate preference or handoff.</li><li>Writeback failure → do not confirm.</li><li>Low confidence → route safely.</li></ul></div>
+    <div class="card"><h3>Swagger Validation Needed</h3><ul><li>Exact endpoint paths.</li><li>Auth scopes and token behavior.</li><li>Request/response schemas.</li><li>Status enums and error codes.</li><li>Cancellation reason fields.</li></ul></div>
+  </div>
+</section>
+
+<div class="footer">
+  <strong>Prepared by Simone Wilson</strong><br>
+  Senior AI Product Manager · Enterprise AI Transformation & Conversational AI Systems<br>
+  simonewrites40@gmail.com · linkedin.com/in/yunchewilson
+</div>
+</main>
+</body>
+</html>
